@@ -1,0 +1,6 @@
+.git
+Dockerfile
+LICENSE.md
+README.md
+docker-compose.yml
+vendor
