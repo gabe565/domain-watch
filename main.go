@@ -79,10 +79,13 @@ func loopOverDomains(domains []string, daysUntilNotify int64) {
 
 func main() {
 	var days int64
-	flag.Int64Var(&days, "days", 31, "Number of days within a notification is triggered")
+	flag.Int64Var(&days, "days", 31, "Number of days within a notification is triggered.")
 
 	var runAsCron bool
-	flag.BoolVar(&runAsCron, "cron", false, "Whether to run daily as a cron or as a one-off")
+	flag.BoolVar(&runAsCron, "cron", false, "Whether to run daily as a cron or as a one-off.")
+	var cronSpec string
+	flag.StringVar(&cronSpec, "cron-spec", "0 9 * * *", "When to run update checks in cron format.")
+
 	flag.BoolVar(&quiet, "q", false, "Run in quiet mode")
 
 	var token string
@@ -114,7 +117,7 @@ func main() {
 	if runAsCron {
 		log.Printf("Running as cron")
 		c := cron.New()
-		c.AddFunc("* * * * *", func() {
+		c.AddFunc(cronSpec, func() {
 			loopOverDomains(domains, days)
 		})
 		c.Run()
