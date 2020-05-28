@@ -90,7 +90,7 @@ func main() {
 
 	var token string
 	flag.StringVar(&token, "telegram-token", "", "Telegram token to user on bot login.")
-	flag.Int64Var(&chatId, "telegram-id", 0, "Telegram chat/user ID.")
+	flag.Int64Var(&chatId, "telegram-chat", 0, "Telegram chat/user ID.")
 
 	flag.Usage = usage
 	flag.Parse()
