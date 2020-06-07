@@ -44,7 +44,7 @@ func getDomainExpiration(parsedWhois whoisparser.WhoisInfo) (time.Time, error) {
 	return dateparse.ParseStrict(parsedWhois.Domain.ExpirationDate)
 }
 
-func daysUntil(date time.Time) int64 {
+func calcDaysUntil(date time.Time) int64 {
 	return int64(math.Floor(time.Until(date).Hours() / 24))
 }
 
@@ -55,14 +55,20 @@ func loopOverDomains(domains []string) {
 			log.Println(err)
 			return
 		}
-		date, err := getDomainExpiration(parsedWhois)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		daysUntil := daysUntil(date)
-		if verbose {
-			log.Printf("%s %s %d", domain, date.Format("2006-01-02"), daysUntil)
+
+		if parsedWhois.Domain.ExpirationDate != "" {
+			var date time.Time
+			date, err = getDomainExpiration(parsedWhois)
+			if err == nil {
+				daysUntil := calcDaysUntil(date)
+				if verbose {
+					log.Printf("%s %s %d", domain, date.Format("2006-01-02"), daysUntil)
+				}
+			}
+		} else {
+			if verbose {
+				log.Printf("%s does not have an expiration date", domain)
+			}
 		}
 
 		if cachedWhois, ok := whoisCache[domain]; ok {
