@@ -7,7 +7,8 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/likexian/whois-go"
 	"github.com/likexian/whois-parser-go"
-	cron "github.com/robfig/cron/v3"
+	"github.com/r3labs/diff"
+	"github.com/robfig/cron/v3"
 	"log"
 	"math"
 	"os"
@@ -19,6 +20,11 @@ var (
 	bot *tgbotapi.BotAPI
 	chatId int64
 	quiet bool
+	whoisCache map[string]whoisparser.WhoisInfo
+	runAsCron bool
+	cronSpec string
+	days int64
+	token string
 )
 
 func usage() {
@@ -26,28 +32,64 @@ func usage() {
 	flag.PrintDefaults()
 }
 
-func getDomainExpiration(domain string) (result time.Time, err error) {
+func getParsedWhois(domain string) (result whoisparser.WhoisInfo, err error) {
 	rawWhois, err := whois.Whois(domain)
 	if err != nil {
-		return time.Now(), err
+		return
 	}
-	parsedWhois, err := whoisparser.Parse(rawWhois)
-	if err != nil {
-		return time.Now(), err
-	}
-	result, err = dateparse.ParseStrict(parsedWhois.Domain.ExpirationDate )
-	if err != nil {
-		return time.Now(), err
-	}
-	return result, nil
+	result, err = whoisparser.Parse(rawWhois)
+	return
 }
 
+func getDomainExpiration(parsedWhois whoisparser.WhoisInfo) (time.Time, error) {
+	return dateparse.ParseStrict(parsedWhois.Domain.ExpirationDate)
+}
 
-func daysUntil(date time.Time) (days int64) {
+func daysUntil(date time.Time) int64 {
 	return int64(math.Floor(time.Until(date).Hours() / 24))
 }
 
-func loopOverDomains(domains []string, daysUntilNotify int64) {
+func createMessage(domain string, changes []diff.Change) (msg tgbotapi.MessageConfig) {
+	removed := ""
+	added := ""
+	for _, change := range changes {
+		switch change.Type {
+		case "update":
+			removed += fmt.Sprintf("\n - %s", change.From)
+			added += fmt.Sprintf("\n + %s", change.To)
+			break
+		case "create":
+			added += fmt.Sprintf("\n + %s", change.To)
+			break
+		case "delete":
+			removed += fmt.Sprintf("\n - %s", change.From)
+			break
+		}
+	}
+	msg = tgbotapi.NewMessage(
+		chatId,
+		fmt.Sprintf("The statuses on %s have changed. Here are the changes:\n```%s%s```", domain, removed, added),
+	)
+	msg.ParseMode = tgbotapi.ModeMarkdown
+	return
+}
+
+func notify(parsedWhois whoisparser.WhoisInfo, cachedWhois whoisparser.WhoisInfo) bool {
+	if bot == nil {
+		return false
+	}
+	changes, err := diff.Diff(cachedWhois.Domain.Status, parsedWhois.Domain.Status)
+	if err != nil {
+		return false
+	}
+	if len(changes) > 0 {
+		msg := createMessage(parsedWhois.Domain.Domain, changes)
+		_, _ = bot.Send(msg)
+	}
+	return true
+}
+
+func loopOverDomains(domains []string) {
 	wg := &sync.WaitGroup{}
 	wg.Add(len(domains))
 
@@ -55,21 +97,27 @@ func loopOverDomains(domains []string, daysUntilNotify int64) {
 		go func (domain string) {
 			defer wg.Done()
 
-			date, err := getDomainExpiration(domain)
+			parsedWhois, err := getParsedWhois(domain)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			date, err := getDomainExpiration(parsedWhois)
 			if err != nil {
 				log.Println(err)
 				return
 			}
 			daysUntil := daysUntil(date)
 			if !quiet {
-				log.Printf("%s\t| %s\t| %d Days\n", domain, date.Format("2006-01-02"), daysUntil)
+				log.Printf("%s %s %d", domain, date.Format("2006-01-02"), daysUntil)
 			}
-			if bot != nil && daysUntil <= daysUntilNotify {
-				msg := tgbotapi.NewMessage(
-					chatId,
-					fmt.Sprintf("The domain registration at %s will expire in %d days.", domain, daysUntil),
-				)
-				_, _ = bot.Send(msg)
+
+			if cachedWhois, ok := whoisCache[domain]; ok {
+				notify(parsedWhois, cachedWhois)
+			}
+
+			if runAsCron {
+				whoisCache[domain] = parsedWhois
 			}
 		} (domain)
 	}
@@ -78,20 +126,12 @@ func loopOverDomains(domains []string, daysUntilNotify int64) {
 }
 
 func main() {
-	var days int64
 	flag.Int64Var(&days, "days", 31, "Number of days within a notification is triggered.")
-
-	var runAsCron bool
 	flag.BoolVar(&runAsCron, "cron", false, "Whether to run daily as a cron or as a one-off.")
-	var cronSpec string
-	flag.StringVar(&cronSpec, "cron-spec", "0 9 * * *", "When to run update checks in cron format.")
-
+	flag.StringVar(&cronSpec, "cron-spec", "0 * * * *", "When to run update checks in cron format.")
 	flag.BoolVar(&quiet, "q", false, "Run in quiet mode")
-
-	var token string
 	flag.StringVar(&token, "telegram-token", "", "Telegram token to user on bot login.")
 	flag.Int64Var(&chatId, "telegram-chat", 0, "Telegram chat/user ID.")
-
 	flag.Usage = usage
 	flag.Parse()
 
@@ -116,12 +156,19 @@ func main() {
 
 	if runAsCron {
 		log.Printf("Running as cron")
+
+		whoisCache = make(map[string]whoisparser.WhoisInfo)
+
 		c := cron.New()
-		c.AddFunc(cronSpec, func() {
-			loopOverDomains(domains, days)
+		_, err := c.AddFunc(cronSpec, func() {
+			loopOverDomains(domains)
 		})
+		if err != nil {
+			log.Println(err)
+			return
+		}
 		c.Run()
 	} else {
-		loopOverDomains(domains, days)
+		loopOverDomains(domains)
 	}
 }
