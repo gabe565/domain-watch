@@ -20,7 +20,6 @@ var (
 	verbose bool
 	whoisCache map[string]whoisparser.WhoisInfo
 	runEvery string
-	days int64
 	token string
 	sleep time.Duration
 )
@@ -85,7 +84,6 @@ func loopOverDomains(domains []string) {
 }
 
 func main() {
-	flag.Int64Var(&days, "days", 31, "Number of days within a notification is triggered.")
 	flag.StringVar(&runEvery, "every", "", "Will enable cron mode and configure update interval.")
 	flag.BoolVar(&verbose, "v", false, "Run in verbose mode")
 	flag.StringVar(&token, "telegram-token", "", "Telegram token to user on bot login.")
