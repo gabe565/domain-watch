@@ -48,7 +48,11 @@ func calcDaysUntil(date time.Time) int64 {
 }
 
 func loopOverDomains(domains []string) {
-	for _, domain := range domains {
+	for key, domain := range domains {
+		if key != 0 {
+			time.Sleep(sleep)
+		}
+
 		parsedWhois, err := getParsedWhois(domain)
 		if err != nil {
 			log.Printf("error fetching %s: %v\n", domain, err)
@@ -77,8 +81,6 @@ func loopOverDomains(domains []string) {
 		if whoisCache != nil {
 			whoisCache[domain] = parsedWhois
 		}
-
-		time.Sleep(sleep)
 	}
 }
 
