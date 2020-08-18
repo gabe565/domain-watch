@@ -17,7 +17,7 @@ import (
 var (
 	bot *tgbotapi.BotAPI
 	chatId int64
-	verbose bool
+	quiet bool
 	whoisCache map[string]whoisparser.WhoisInfo
 	runEvery string
 	token string
@@ -63,12 +63,12 @@ func loopOverDomains(domains []string) {
 			date, err = getDomainExpiration(parsedWhois)
 			if err == nil {
 				daysUntil := calcDaysUntil(date)
-				if verbose {
+				if !quiet {
 					log.Printf("%s %s %d", domain, date.Format("2006-01-02"), daysUntil)
 				}
 			}
 		} else {
-			if verbose {
+			if !quiet {
 				log.Printf("%s does not have an expiration date", domain)
 			}
 		}
@@ -85,7 +85,7 @@ func loopOverDomains(domains []string) {
 
 func main() {
 	flag.StringVar(&runEvery, "every", "", "Will enable cron mode and configure update interval.")
-	flag.BoolVar(&verbose, "v", false, "Run in verbose mode")
+	flag.BoolVar(&quiet, "q", false, "Run in quiet mode")
 	flag.StringVar(&token, "telegram-token", "", "Telegram token to user on bot login.")
 	flag.Int64Var(&chatId, "telegram-chat", 0, "Telegram chat/user ID.")
 	flag.DurationVar(&sleep, "sleep", 3 * time.Second, "Time to sleep between queries to avoid rate limits.")
