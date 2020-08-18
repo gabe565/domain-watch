@@ -90,7 +90,7 @@ func main() {
 	flag.BoolVar(&verbose, "v", false, "Run in verbose mode")
 	flag.StringVar(&token, "telegram-token", "", "Telegram token to user on bot login.")
 	flag.Int64Var(&chatId, "telegram-chat", 0, "Telegram chat/user ID.")
-	flag.DurationVar(&sleep, "sleep", time.Second, "Time to sleep between queries to avoid rate limits.")
+	flag.DurationVar(&sleep, "sleep", 3 * time.Second, "Time to sleep between queries to avoid rate limits.")
 	flag.Usage = usage
 	flag.Parse()
 
