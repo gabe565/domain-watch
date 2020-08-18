@@ -19,7 +19,6 @@ var (
 	chatId int64
 	verbose bool
 	whoisCache map[string]whoisparser.WhoisInfo
-	runAsCron bool
 	runEvery string
 	days int64
 	token string
@@ -85,8 +84,7 @@ func loopOverDomains(domains []string) {
 
 func main() {
 	flag.Int64Var(&days, "days", 31, "Number of days within a notification is triggered.")
-	flag.BoolVar(&runAsCron, "cron", false, "Whether to run daily as a cron or as a one-off.")
-	flag.StringVar(&runEvery, "every", "1m", "When to run update checks in cron format.")
+	flag.StringVar(&runEvery, "every", "", "Will enable cron mode and configure update interval.")
 	flag.BoolVar(&verbose, "v", false, "Run in verbose mode")
 	flag.StringVar(&token, "telegram-token", "", "Telegram token to user on bot login.")
 	flag.Int64Var(&chatId, "telegram-chat", 0, "Telegram chat/user ID.")
@@ -111,7 +109,7 @@ func main() {
 	// Pull domains from command line args
 	domains := flag.Args()
 
-	if runAsCron {
+	if runEvery != "" {
 		whoisCache = make(map[string]whoisparser.WhoisInfo)
 
 		log.Println("Initial run to fill cache")
