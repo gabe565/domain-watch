@@ -52,8 +52,8 @@ func loopOverDomains(domains []string) {
 	for _, domain := range domains {
 		parsedWhois, err := getParsedWhois(domain)
 		if err != nil {
-			log.Println(err)
-			return
+			log.Printf("error fetching %s: %v\n", domain, err)
+			continue
 		}
 
 		if parsedWhois.Domain.ExpirationDate != "" {
