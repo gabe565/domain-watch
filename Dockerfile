@@ -22,6 +22,8 @@ RUN set -x \
 
 
 FROM alpine
+LABEL org.opencontainers.image.authors "Gabe Cook <gabe565@gmail.com>"
+LABEL org.opencontainers.image.source https://github.com/gabe565/domain-expiration-notifier
 WORKDIR /app
 COPY --from=builder /app/domain-expiration-notifier /usr/local/bin/
 ENTRYPOINT ["domain-expiration-notifier"]
