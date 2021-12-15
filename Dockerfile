@@ -1,20 +1,27 @@
-FROM golang:1-alpine as builder
+ARG GO_VERSION=1.17
 
+FROM --platform=$BUILDPLATFORM golang:$GO_VERSION-alpine as builder
 WORKDIR /app
 
-COPY go.mod .
+COPY go.mod go.sum ./
 RUN go mod download
 
-ARG GOOS=linux
-ARG GOARCH=amd64
 COPY . .
-RUN go build -ldflags="-w -s"
+
+# Set Golang build envs based on Docker platform string
+ARG TARGETPLATFORM
+RUN set -x \
+    && case "$TARGETPLATFORM" in \
+        'linux/amd64') export GOARCH=amd64 ;; \
+        'linux/arm/v6') export GOARCH=arm GOARM=6 ;; \
+        'linux/arm/v7') export GOARCH=arm GOARM=7 ;; \
+        'linux/arm64') export GOARCH=arm64 ;; \
+        *) echo "Unsupported target: $TARGETPLATFORM" && exit 1 ;; \
+    esac \
+    && go build -ldflags='-w -s'
+
 
 FROM alpine
-
 WORKDIR /app
-
-ENV PATH="/app:$PATH"
-
-COPY --from=builder /app/domain-expiration-notifier .
+COPY --from=builder /app/domain-expiration-notifier /usr/local/bin/
 ENTRYPOINT ["domain-expiration-notifier"]
