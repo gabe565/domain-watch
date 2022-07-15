@@ -28,6 +28,10 @@ func init() {
 }
 
 func preRun(cmd *cobra.Command, domainNames []string) (err error) {
+	if completionFlag != "" {
+		return completion(cmd, domainNames)
+	}
+
 	if conf.Token != "" {
 		if conf.ChatId == 0 {
 			return errors.New("telegram token flag requires --telegram-chat to be set")
