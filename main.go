@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gabe565/domain-expiration-notifier/internal/config"
 	"github.com/gabe565/domain-expiration-notifier/internal/domain"
 	"github.com/gabe565/domain-expiration-notifier/internal/telegram"
 	"github.com/robfig/cron/v3"
@@ -15,18 +16,18 @@ var cmd = &cobra.Command{
 	RunE:    run,
 }
 
-var config Config
+var conf config.Config
 
 func init() {
-	cmd.Flags().StringVar(&config.RunEvery, "every", "", "enable cron mode and configure update interval")
-	cmd.Flags().DurationVar(&config.Sleep, "sleep", 3*time.Second, "sleep time between queries to avoid rate limits")
-	cmd.Flags().StringVar(&config.Token, "telegram-token", "", "Telegram token")
-	cmd.Flags().Int64Var(&config.ChatId, "telegram-chat", 0, "Telegram chat ID")
+	cmd.Flags().StringVar(&conf.RunEvery, "every", "", "enable cron mode and configure update interval")
+	cmd.Flags().DurationVar(&conf.Sleep, "sleep", 3*time.Second, "sleep time between queries to avoid rate limits")
+	cmd.Flags().StringVar(&conf.Token, "telegram-token", "", "Telegram token")
+	cmd.Flags().Int64Var(&conf.ChatId, "telegram-chat", 0, "Telegram chat ID")
 }
 
 func preRun(cmd *cobra.Command, domainNames []string) (err error) {
-	if config.Token != "" && config.ChatId != 0 {
-		if err := telegram.Login(config.Token, config.ChatId); err != nil {
+	if conf.Token != "" && conf.ChatId != 0 {
+		if err := telegram.Login(conf.Token, conf.ChatId); err != nil {
 			return err
 		}
 	}
@@ -41,11 +42,11 @@ func run(cmd *cobra.Command, domainNames []string) (err error) {
 
 	domains.Tick()
 
-	if config.RunEvery != "" {
+	if conf.RunEvery != "" {
 		log.Info("running as cron")
 
 		c := cron.New(cron.WithChain(cron.SkipIfStillRunning(cron.DefaultLogger)))
-		_, err := c.AddFunc("@every "+config.RunEvery, domains.Tick)
+		_, err := c.AddFunc("@every "+conf.RunEvery, domains.Tick)
 		if err != nil {
 			log.WithError(err).Error("failed to register job")
 			return err
