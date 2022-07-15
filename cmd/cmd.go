@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"github.com/gabe565/domain-expiration-notifier/internal/config"
 	"github.com/gabe565/domain-expiration-notifier/internal/domain"
 	"github.com/gabe565/domain-expiration-notifier/internal/telegram"
@@ -26,7 +27,11 @@ func init() {
 }
 
 func preRun(cmd *cobra.Command, domainNames []string) (err error) {
-	if conf.Token != "" && conf.ChatId != 0 {
+	if conf.Token != "" {
+		if conf.ChatId == 0 {
+			return errors.New("telegram token flag requires --telegram-chat to be set")
+		}
+
 		if err := telegram.Login(conf.Token, conf.ChatId); err != nil {
 			return err
 		}
