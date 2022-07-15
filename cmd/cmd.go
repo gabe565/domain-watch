@@ -43,8 +43,16 @@ func run(cmd *cobra.Command, domainNames []string) (err error) {
 	cmd.SilenceUsage = true
 
 	domains := make(domain.Domains, 0, len(domainNames))
-	for _, domainName := range domainNames {
-		domains = append(domains, domain.Domain{Name: domainName})
+	for i, domainName := range domainNames {
+		var sleep time.Duration
+		if i != 0 {
+			sleep = conf.Sleep
+		}
+		d := domain.Domain{
+			Name:  domainName,
+			Sleep: sleep,
+		}
+		domains = append(domains, d)
 	}
 
 	domains.Tick()
