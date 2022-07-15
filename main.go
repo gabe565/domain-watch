@@ -59,7 +59,9 @@ func loopOverDomains(domains []string) {
 		if parsedWhois.Domain.ExpirationDate != "" {
 			var date time.Time
 			date, err = getDomainExpiration(parsedWhois)
-			if err == nil {
+			if err != nil {
+				l.WithError(err).Warn("failed to parse expiration date")
+			} else {
 				left := date.Sub(time.Now()).Truncate(24 * time.Hour)
 				l.WithFields(log.Fields{
 					"expires":   date,
