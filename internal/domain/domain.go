@@ -2,7 +2,7 @@ package domain
 
 import (
 	"github.com/araddon/dateparse"
-	"github.com/gabe565/domain-expiration-notifier/internal/telegram"
+	"github.com/gabe565/domain-watch/internal/telegram"
 	"github.com/likexian/whois-go"
 	whoisparser "github.com/likexian/whois-parser-go"
 	log "github.com/sirupsen/logrus"

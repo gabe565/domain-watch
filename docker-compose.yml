@@ -3,4 +3,4 @@ version: '2.4'
 services:
   app:
     build: .
-    image: ghcr.io/gabe565/domain-expiration-notifier
+    image: ghcr.io/gabe565/domain-watch

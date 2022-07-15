@@ -1,4 +1,4 @@
-module github.com/gabe565/domain-expiration-notifier
+module github.com/gabe565/domain-watch
 
 go 1.17
 

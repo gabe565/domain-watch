@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"errors"
-	"github.com/gabe565/domain-expiration-notifier/internal/config"
-	"github.com/gabe565/domain-expiration-notifier/internal/domain"
-	"github.com/gabe565/domain-expiration-notifier/internal/telegram"
+	"github.com/gabe565/domain-watch/internal/config"
+	"github.com/gabe565/domain-watch/internal/domain"
+	"github.com/gabe565/domain-watch/internal/telegram"
 	"github.com/robfig/cron/v3"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -12,7 +12,7 @@ import (
 )
 
 var Command = &cobra.Command{
-	Use:     "domain-expiration-notifier",
+	Use:     "domain-watch",
 	PreRunE: preRun,
 	RunE:    run,
 }
