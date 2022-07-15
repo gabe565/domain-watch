@@ -1,4 +1,4 @@
-package main
+package telegram
 
 import (
 	"fmt"
@@ -8,21 +8,27 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func telegramLogin(token string, chatId int64) (bot *tgbotapi.BotAPI, err error) {
+var (
+	bot    *tgbotapi.BotAPI
+	chatId int64
+)
+
+func Login(token string, chatId_ int64) (err error) {
 	if token != "" && chatId != 0 {
+		chatId = chatId_
 		bot, err = tgbotapi.NewBotAPI(token)
 		if err != nil {
-			return
+			return err
 		}
 		log.WithFields(log.Fields{
 			"username": bot.Self.UserName,
 			"chat":     chatId,
 		}).Info("auth success", bot.Self.UserName)
 	}
-	return
+	return nil
 }
 
-func createMessage(domain string, changes []diff.Change) (msg tgbotapi.MessageConfig) {
+func CreateMessage(domain string, changes []diff.Change) (msg tgbotapi.MessageConfig) {
 	removed := ""
 	added := ""
 	for _, change := range changes {
@@ -40,14 +46,14 @@ func createMessage(domain string, changes []diff.Change) (msg tgbotapi.MessageCo
 		}
 	}
 	msg = tgbotapi.NewMessage(
-		config.ChatId,
+		chatId,
 		fmt.Sprintf("The statuses on %s have changed. Here are the changes:\n```%s%s```", domain, removed, added),
 	)
 	msg.ParseMode = tgbotapi.ModeMarkdown
 	return
 }
 
-func notify(parsedWhois whoisparser.WhoisInfo, cachedWhois whoisparser.WhoisInfo) bool {
+func Notify(parsedWhois whoisparser.WhoisInfo, cachedWhois whoisparser.WhoisInfo) bool {
 	if bot == nil {
 		return false
 	}
@@ -56,7 +62,7 @@ func notify(parsedWhois whoisparser.WhoisInfo, cachedWhois whoisparser.WhoisInfo
 		return false
 	}
 	if len(changes) > 0 {
-		msg := createMessage(parsedWhois.Domain.Domain, changes)
+		msg := CreateMessage(parsedWhois.Domain.Domain, changes)
 		_, _ = bot.Send(msg)
 	}
 	return true
