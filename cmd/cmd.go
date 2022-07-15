@@ -12,18 +12,15 @@ import (
 )
 
 var Command = &cobra.Command{
-	Use:     "domain-watch",
-	PreRunE: preRun,
-	RunE:    run,
+	Use:               "domain-watch",
+	PreRunE:           preRun,
+	RunE:              run,
+	ValidArgsFunction: noFileComp,
 }
 
 var conf config.Config
 
 func init() {
-	Command.Flags().DurationVar(&conf.RunEvery, "every", 0, "enable cron mode and configure update interval")
-	Command.Flags().DurationVar(&conf.Sleep, "sleep", 3*time.Second, "sleep time between queries to avoid rate limits")
-	Command.Flags().StringVar(&conf.Token, "telegram-token", "", "Telegram token")
-	Command.Flags().Int64Var(&conf.ChatId, "telegram-chat", 0, "Telegram chat ID")
 	cobra.OnInitialize(initLog)
 }
 
