@@ -5,7 +5,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	whoisparser "github.com/likexian/whois-parser-go"
 	"github.com/r3labs/diff"
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 func telegramLogin(token string, chatId int64) (bot *tgbotapi.BotAPI, err error) {
@@ -14,8 +14,10 @@ func telegramLogin(token string, chatId int64) (bot *tgbotapi.BotAPI, err error)
 		if err != nil {
 			return
 		}
-		log.Printf("Authorized on account %s", bot.Self.UserName)
-		log.Printf("Sending notifications to chat ID %d", chatId)
+		log.WithFields(log.Fields{
+			"username": bot.Self.UserName,
+			"chat":     chatId,
+		}).Info("auth success", bot.Self.UserName)
 	}
 	return
 }
@@ -38,7 +40,7 @@ func createMessage(domain string, changes []diff.Change) (msg tgbotapi.MessageCo
 		}
 	}
 	msg = tgbotapi.NewMessage(
-		chatId,
+		config.ChatId,
 		fmt.Sprintf("The statuses on %s have changed. Here are the changes:\n```%s%s```", domain, removed, added),
 	)
 	msg.ParseMode = tgbotapi.ModeMarkdown
