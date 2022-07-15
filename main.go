@@ -15,13 +15,13 @@ import (
 )
 
 var (
-	bot *tgbotapi.BotAPI
-	chatId int64
-	quiet bool
+	bot        *tgbotapi.BotAPI
+	chatId     int64
+	quiet      bool
 	whoisCache map[string]whoisparser.WhoisInfo
-	runEvery string
-	token string
-	sleep time.Duration
+	runEvery   string
+	token      string
+	sleep      time.Duration
 )
 
 func usage() {
@@ -88,7 +88,7 @@ func main() {
 	flag.BoolVar(&quiet, "q", false, "Run in quiet mode")
 	flag.StringVar(&token, "telegram-token", "", "Telegram token to user on bot login.")
 	flag.Int64Var(&chatId, "telegram-chat", 0, "Telegram chat/user ID.")
-	flag.DurationVar(&sleep, "sleep", 3 * time.Second, "Time to sleep between queries to avoid rate limits.")
+	flag.DurationVar(&sleep, "sleep", 3*time.Second, "Time to sleep between queries to avoid rate limits.")
 	flag.Usage = usage
 	flag.Parse()
 
