@@ -47,7 +47,12 @@ func CreateMessage(domain string, changes []diff.Change) (msg tgbotapi.MessageCo
 	}
 	msg = tgbotapi.NewMessage(
 		chatId,
-		fmt.Sprintf("The statuses on %s have changed. Here are the changes:\n```%s%s```", domain, removed, added),
+		fmt.Sprintf(
+			"The statuses on %s have changed. Here are the changes:\n```%s%s```",
+			domain,
+			removed,
+			added,
+		),
 	)
 	msg.ParseMode = tgbotapi.ModeMarkdown
 	return
