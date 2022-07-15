@@ -24,6 +24,7 @@ func init() {
 	Command.Flags().DurationVar(&conf.Sleep, "sleep", 3*time.Second, "sleep time between queries to avoid rate limits")
 	Command.Flags().StringVar(&conf.Token, "telegram-token", "", "Telegram token")
 	Command.Flags().Int64Var(&conf.ChatId, "telegram-chat", 0, "Telegram chat ID")
+	cobra.OnInitialize(initLog)
 }
 
 func preRun(cmd *cobra.Command, domainNames []string) (err error) {
