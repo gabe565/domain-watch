@@ -5,7 +5,7 @@ import (
 )
 
 type Config struct {
-	RunEvery string
+	RunEvery time.Duration
 	Sleep    time.Duration
 	Token    string
 	ChatId   int64

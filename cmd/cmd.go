@@ -19,7 +19,7 @@ var Command = &cobra.Command{
 var conf config.Config
 
 func init() {
-	Command.Flags().StringVar(&conf.RunEvery, "every", "", "enable cron mode and configure update interval")
+	Command.Flags().DurationVar(&conf.RunEvery, "every", 0, "enable cron mode and configure update interval")
 	Command.Flags().DurationVar(&conf.Sleep, "sleep", 3*time.Second, "sleep time between queries to avoid rate limits")
 	Command.Flags().StringVar(&conf.Token, "telegram-token", "", "Telegram token")
 	Command.Flags().Int64Var(&conf.ChatId, "telegram-chat", 0, "Telegram chat ID")
@@ -42,11 +42,11 @@ func run(cmd *cobra.Command, domainNames []string) (err error) {
 
 	domains.Tick()
 
-	if conf.RunEvery != "" {
+	if conf.RunEvery != 0 {
 		log.Info("running as cron")
 
 		c := cron.New(cron.WithChain(cron.SkipIfStillRunning(cron.DefaultLogger)))
-		_, err := c.AddFunc("@every "+conf.RunEvery, domains.Tick)
+		_, err := c.AddFunc("@every "+conf.RunEvery.String(), domains.Tick)
 		if err != nil {
 			log.WithError(err).Error("failed to register job")
 			return err
