@@ -35,6 +35,8 @@ func preRun(cmd *cobra.Command, domainNames []string) (err error) {
 }
 
 func run(cmd *cobra.Command, domainNames []string) (err error) {
+	cmd.SilenceUsage = true
+
 	domains := make(domain.Domains, 0, len(domainNames))
 	for _, domainName := range domainNames {
 		domains = append(domains, domain.Domain{Name: domainName})
