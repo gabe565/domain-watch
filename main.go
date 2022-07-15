@@ -39,10 +39,9 @@ func run(cmd *cobra.Command, domainNames []string) (err error) {
 		domains = append(domains, domain.Domain{Name: domainName})
 	}
 
-	if config.RunEvery != "" {
-		log.Info("initial run to fill cache")
-		domains.Tick()
+	domains.Tick()
 
+	if config.RunEvery != "" {
 		log.Info("running as cron")
 
 		c := cron.New(cron.WithChain(cron.SkipIfStillRunning(cron.DefaultLogger)))
@@ -52,8 +51,6 @@ func run(cmd *cobra.Command, domainNames []string) (err error) {
 			return err
 		}
 		c.Run()
-	} else {
-		domains.Tick()
 	}
 
 	return nil
