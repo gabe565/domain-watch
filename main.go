@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gabe565/domain-expiration-notifier/internal/domain"
 	"github.com/gabe565/domain-expiration-notifier/internal/telegram"
 	"github.com/robfig/cron/v3"
@@ -47,7 +46,7 @@ func run(cmd *cobra.Command, domainNames []string) (err error) {
 		log.Info("running as cron")
 
 		c := cron.New(cron.WithChain(cron.SkipIfStillRunning(cron.DefaultLogger)))
-		_, err := c.AddFunc(fmt.Sprintf("@every %s", config.RunEvery), func() {
+		_, err := c.AddFunc("@every "+config.RunEvery, func() {
 			domains.Tick()
 		})
 		if err != nil {
