@@ -46,9 +46,7 @@ func run(cmd *cobra.Command, domainNames []string) (err error) {
 		log.Info("running as cron")
 
 		c := cron.New(cron.WithChain(cron.SkipIfStillRunning(cron.DefaultLogger)))
-		_, err := c.AddFunc("@every "+config.RunEvery, func() {
-			domains.Tick()
-		})
+		_, err := c.AddFunc("@every "+config.RunEvery, domains.Tick)
 		if err != nil {
 			log.WithError(err).Error("failed to register job")
 			return err
