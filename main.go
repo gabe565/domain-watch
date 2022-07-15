@@ -9,7 +9,6 @@ import (
 	"github.com/robfig/cron/v3"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"math"
 	"time"
 )
 
@@ -43,10 +42,6 @@ func getDomainExpiration(parsedWhois whoisparser.WhoisInfo) (time.Time, error) {
 	return dateparse.ParseStrict(parsedWhois.Domain.ExpirationDate)
 }
 
-func calcDaysUntil(date time.Time) int64 {
-	return int64(math.Floor(time.Until(date).Hours() / 24))
-}
-
 func loopOverDomains(domains []string) {
 	for key, domain := range domains {
 		if key != 0 {
@@ -65,10 +60,10 @@ func loopOverDomains(domains []string) {
 			var date time.Time
 			date, err = getDomainExpiration(parsedWhois)
 			if err == nil {
-				daysUntil := calcDaysUntil(date)
+				left := date.Sub(time.Now()).Truncate(24 * time.Hour)
 				l.WithFields(log.Fields{
-					"expires":  date,
-					"days": daysUntil,
+					"expires":   date,
+					"days_left": left.Hours() / 24.0,
 				}).Info("fetched whois")
 			}
 		} else {
