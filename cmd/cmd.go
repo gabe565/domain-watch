@@ -2,12 +2,12 @@ package cmd
 
 import (
 	"errors"
-	"github.com/gabe565/domain-watch/internal/config"
 	"github.com/gabe565/domain-watch/internal/domain"
 	"github.com/gabe565/domain-watch/internal/telegram"
 	"github.com/robfig/cron/v3"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"time"
 )
 
@@ -18,10 +18,8 @@ var Command = &cobra.Command{
 	ValidArgsFunction: noFileComp,
 }
 
-var conf config.Config
-
 func init() {
-	cobra.OnInitialize(initLog)
+	cobra.OnInitialize(initLog, initViper)
 }
 
 func preRun(cmd *cobra.Command, domainNames []string) (err error) {
@@ -29,12 +27,14 @@ func preRun(cmd *cobra.Command, domainNames []string) (err error) {
 		return completion(cmd, domainNames)
 	}
 
-	if conf.Token != "" {
-		if conf.ChatId == 0 {
+	token := viper.GetString("telegram.token")
+	if token != "" {
+		chatId := viper.GetInt64("telegram.chat")
+		if chatId == 0 {
 			return errors.New("telegram token flag requires --telegram-chat to be set")
 		}
 
-		if err := telegram.Login(conf.Token, conf.ChatId); err != nil {
+		if err := telegram.Login(token, chatId); err != nil {
 			return err
 		}
 	}
@@ -48,7 +48,7 @@ func run(cmd *cobra.Command, domainNames []string) (err error) {
 	for i, domainName := range domainNames {
 		var sleep time.Duration
 		if i != 0 {
-			sleep = conf.Sleep
+			sleep = viper.GetDuration("sleep")
 		}
 		d := domain.Domain{
 			Name:  domainName,
@@ -59,11 +59,12 @@ func run(cmd *cobra.Command, domainNames []string) (err error) {
 
 	domains.Tick()
 
-	if conf.RunEvery != 0 {
+	every := viper.GetDuration("every")
+	if every != 0 {
 		log.Info("running as cron")
 
 		c := cron.New(cron.WithChain(cron.SkipIfStillRunning(cron.DefaultLogger)))
-		_, err := c.AddFunc("@every "+conf.RunEvery.String(), domains.Tick)
+		_, err := c.AddFunc("@every "+every.String(), domains.Tick)
 		if err != nil {
 			log.WithError(err).Error("failed to register job")
 			return err
