@@ -10,7 +10,8 @@ COPY . .
 
 # Set Golang build envs based on Docker platform string
 ARG TARGETPLATFORM
-RUN set -x \
+RUN --mount=type=cache,target=/root/.cache \
+    set -x \
     && case "$TARGETPLATFORM" in \
         'linux/amd64') export GOARCH=amd64 ;; \
         'linux/arm/v6') export GOARCH=arm GOARM=6 ;; \
