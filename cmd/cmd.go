@@ -21,10 +21,17 @@ func init() {
 	cobra.OnInitialize(initLog, initViper)
 }
 
-func preRun(cmd *cobra.Command, domainNames []string) (err error) {
+var domainNames []string
+
+func preRun(cmd *cobra.Command, args []string) (err error) {
 	if completionFlag != "" {
 		return completion(cmd, domainNames)
 	}
+
+	if v := viper.GetStringSlice("domains"); v != nil {
+		args = append(domainNames, v...)
+	}
+	domainNames = args
 
 	if len(domainNames) == 0 {
 		return errors.New("missing domain")
@@ -44,7 +51,7 @@ func preRun(cmd *cobra.Command, domainNames []string) (err error) {
 	return nil
 }
 
-func run(cmd *cobra.Command, domainNames []string) (err error) {
+func run(cmd *cobra.Command, _ []string) (err error) {
 	cmd.SilenceUsage = true
 
 	domains := domain.Domains{
