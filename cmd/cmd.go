@@ -27,6 +27,10 @@ func preRun(cmd *cobra.Command, domainNames []string) (err error) {
 		return completion(cmd, domainNames)
 	}
 
+	if len(domainNames) == 0 {
+		return errors.New("missing domain")
+	}
+
 	token := viper.GetString("telegram.token")
 	if token != "" {
 		chatId := viper.GetInt64("telegram.chat")
