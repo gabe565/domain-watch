@@ -23,6 +23,10 @@ func (d Domain) Whois() (whoisparser.WhoisInfo, error) {
 	return whoisparser.Parse(raw)
 }
 
+func (d Domain) Log() *log.Entry {
+	return log.WithField("domain", d.Name)
+}
+
 func (d Domain) Run() error {
 	w, err := d.Whois()
 	if err != nil {
@@ -32,7 +36,7 @@ func (d Domain) Run() error {
 		d.Last = &w
 	}()
 
-	l := log.WithField("domain", d.Name)
+	l := d.Log()
 
 	if w.Domain.ExpirationDate != "" {
 		var date time.Time
