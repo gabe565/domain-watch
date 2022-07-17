@@ -10,9 +10,8 @@ import (
 )
 
 type Domain struct {
-	Name  string
-	Sleep time.Duration
-	Last  *whoisparser.WhoisInfo
+	Name string
+	Last *whoisparser.WhoisInfo
 }
 
 func (d Domain) Whois() (whoisparser.WhoisInfo, error) {
@@ -25,10 +24,6 @@ func (d Domain) Whois() (whoisparser.WhoisInfo, error) {
 }
 
 func (d Domain) Run() error {
-	if d.Sleep != 0 {
-		time.Sleep(d.Sleep)
-	}
-
 	w, err := d.Whois()
 	if err != nil {
 		return err
