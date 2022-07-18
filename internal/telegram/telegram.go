@@ -23,7 +23,7 @@ func Login(token string, chatId_ int64) (err error) {
 		log.WithFields(log.Fields{
 			"username": bot.Self.UserName,
 			"chat":     chatId,
-		}).Info("auth success", bot.Self.UserName)
+		}).Info("auth success")
 	}
 	return nil
 }
