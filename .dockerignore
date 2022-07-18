@@ -1,4 +1,7 @@
+.dockerignore
 .git
+.github
+.idea
 Dockerfile
 LICENSE.md
 README.md
