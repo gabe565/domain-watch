@@ -56,17 +56,22 @@ func CreateMessage(domain string, changes []diff.Change) (msg tgbotapi.MessageCo
 	return
 }
 
-func Notify(parsedWhois whoisparser.WhoisInfo, cachedWhois whoisparser.WhoisInfo) bool {
+func Notify(parsedWhois whoisparser.WhoisInfo, cachedWhois whoisparser.WhoisInfo) error {
 	if bot == nil {
-		return false
+		return nil
 	}
+
 	changes, err := diff.Diff(cachedWhois.Domain.Status, parsedWhois.Domain.Status)
 	if err != nil {
-		return false
+		return err
 	}
+
 	if len(changes) > 0 {
 		msg := CreateMessage(parsedWhois.Domain.Domain, changes)
-		_, _ = bot.Send(msg)
+		if _, err = bot.Send(msg); err != nil {
+			return err
+		}
 	}
-	return true
+
+	return nil
 }

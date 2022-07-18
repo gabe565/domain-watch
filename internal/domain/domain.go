@@ -55,7 +55,9 @@ func (d *Domain) Run() error {
 	}
 
 	if d.Last != nil {
-		telegram.Notify(w, *d.Last)
+		if err := telegram.Notify(w, *d.Last); err != nil {
+			return err
+		}
 	}
 
 	return nil
