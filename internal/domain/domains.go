@@ -19,7 +19,7 @@ func (d Domains) Tick() {
 			time.Sleep(d.Sleep)
 		}
 		if err := domain.Run(); err != nil {
-			domain.Log().WithError(err).Error("failed to fetch whois")
+			domain.Log().WithError(err).Error("domain update failed")
 		}
 	}
 }

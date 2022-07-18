@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"github.com/araddon/dateparse"
 	"github.com/gabe565/domain-watch/internal/telegram"
 	"github.com/likexian/whois-go"
@@ -30,7 +31,7 @@ func (d Domain) Log() *log.Entry {
 func (d *Domain) Run() error {
 	w, err := d.Whois()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to fetch whois: %w", err)
 	}
 	defer func() {
 		d.Last = &w
@@ -56,7 +57,7 @@ func (d *Domain) Run() error {
 
 	if d.Last != nil {
 		if err := telegram.Notify(w, *d.Last); err != nil {
-			return err
+			return fmt.Errorf("failed to notify telegram: %w", err)
 		}
 	}
 
