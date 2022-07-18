@@ -56,7 +56,7 @@ func run(cmd *cobra.Command, _ []string) (err error) {
 
 	domains := domain.Domains{
 		Sleep:   viper.GetDuration("sleep"),
-		Domains: make([]domain.Domain, 0, len(domainNames)),
+		Domains: make([]*domain.Domain, 0, len(domainNames)),
 	}
 	for _, domainName := range domainNames {
 		domains.Add(domain.Domain{Name: domainName})

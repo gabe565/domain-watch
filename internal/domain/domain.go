@@ -27,7 +27,7 @@ func (d Domain) Log() *log.Entry {
 	return log.WithField("domain", d.Name)
 }
 
-func (d Domain) Run() error {
+func (d *Domain) Run() error {
 	w, err := d.Whois()
 	if err != nil {
 		return err

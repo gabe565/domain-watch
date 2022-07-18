@@ -14,7 +14,7 @@ var (
 )
 
 func Login(token string, chatId_ int64) (err error) {
-	if token != "" && chatId != 0 {
+	if token != "" && chatId_ != 0 {
 		chatId = chatId_
 		bot, err = tgbotapi.NewBotAPI(token)
 		if err != nil {

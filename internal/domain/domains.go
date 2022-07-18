@@ -6,11 +6,11 @@ import (
 
 type Domains struct {
 	Sleep   time.Duration
-	Domains []Domain
+	Domains []*Domain
 }
 
 func (d *Domains) Add(domain Domain) {
-	d.Domains = append(d.Domains, domain)
+	d.Domains = append(d.Domains, &domain)
 }
 
 func (d Domains) Tick() {
