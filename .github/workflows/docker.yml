@@ -3,17 +3,27 @@ name: Docker Build
 on:
   schedule:
     - cron: "0 7 * * 1"
-  push:
-    branches: main
-
-env:
-  image: ghcr.io/gabe565/domain-watch
+  push: {}
 
 jobs:
   build:
     name: Build Image
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ghcr.io/gabe565/domain-watch
+          tags: |
+            type=raw,priority=1000,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=ref,event=branch
+            type=sha
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -33,13 +43,13 @@ jobs:
           printf '::set-output name=short-sha::%s' "${GITHUB_SHA:0:7}"
 
       - name: Build and Push
-        id: docker_build
         uses: docker/build-push-action@v3
         with:
+          context: .
+          pull: true
           push: true
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8
-          tags: |
-            ${{ env.image }}:${{ steps.vars.outputs.short-sha }}
-            ${{ env.image }}:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
