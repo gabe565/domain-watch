@@ -18,7 +18,7 @@ var Command = &cobra.Command{
 }
 
 func init() {
-	cobra.OnInitialize(initLog, initViper)
+	cobra.OnInitialize(initViper, initLog)
 }
 
 var domainNames []string
