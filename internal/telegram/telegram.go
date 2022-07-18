@@ -3,7 +3,6 @@ package telegram
 import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	whoisparser "github.com/likexian/whois-parser-go"
 	"github.com/r3labs/diff"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -26,9 +25,17 @@ func Login(token string) (err error) {
 	return nil
 }
 
-func CreateMessage(domain string, changes []diff.Change) (msg tgbotapi.MessageConfig) {
-	removed := ""
-	added := ""
+func LoggedIn() bool {
+	return bot != nil
+}
+
+func Send(msg tgbotapi.MessageConfig) error {
+	_, err := bot.Send(msg)
+	return err
+}
+
+func NewStatusChangedMessage(domain string, changes []diff.Change) (msg tgbotapi.MessageConfig) {
+	var added, removed string
 	for _, change := range changes {
 		switch change.Type {
 		case "update":
@@ -56,22 +63,9 @@ func CreateMessage(domain string, changes []diff.Change) (msg tgbotapi.MessageCo
 	return
 }
 
-func Notify(parsedWhois whoisparser.WhoisInfo, cachedWhois whoisparser.WhoisInfo) error {
-	if bot == nil {
-		return nil
-	}
-
-	changes, err := diff.Diff(cachedWhois.Domain.Status, parsedWhois.Domain.Status)
-	if err != nil {
-		return err
-	}
-
-	if len(changes) > 0 {
-		msg := CreateMessage(parsedWhois.Domain.Domain, changes)
-		if _, err = bot.Send(msg); err != nil {
-			return err
-		}
-	}
-
-	return nil
+func NewThresholdMessage(domain string, timeLeft int) (msg tgbotapi.MessageConfig) {
+	return tgbotapi.NewMessage(
+		viper.GetInt64("telegram.chat"),
+		fmt.Sprintf("%s will expire in %d days.", domain, timeLeft),
+	)
 }
