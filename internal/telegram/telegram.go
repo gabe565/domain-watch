@@ -6,23 +6,21 @@ import (
 	whoisparser "github.com/likexian/whois-parser-go"
 	"github.com/r3labs/diff"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 var (
-	bot    *tgbotapi.BotAPI
-	chatId int64
+	bot *tgbotapi.BotAPI
 )
 
-func Login(token string, chatId_ int64) (err error) {
-	if token != "" && chatId_ != 0 {
-		chatId = chatId_
+func Login(token string) (err error) {
+	if token != "" {
 		bot, err = tgbotapi.NewBotAPI(token)
 		if err != nil {
 			return err
 		}
 		log.WithFields(log.Fields{
 			"username": bot.Self.UserName,
-			"chat":     chatId,
 		}).Info("auth success")
 	}
 	return nil
@@ -46,7 +44,7 @@ func CreateMessage(domain string, changes []diff.Change) (msg tgbotapi.MessageCo
 		}
 	}
 	msg = tgbotapi.NewMessage(
-		chatId,
+		viper.GetInt64("telegram.chat"),
 		fmt.Sprintf(
 			"The statuses on %s have changed. Here are the changes:\n```%s%s```",
 			domain,

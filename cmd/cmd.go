@@ -39,12 +39,11 @@ func preRun(cmd *cobra.Command, args []string) (err error) {
 
 	token := viper.GetString("telegram.token")
 	if token != "" {
-		chatId := viper.GetInt64("telegram.chat")
-		if chatId == 0 {
+		if !viper.IsSet("telegram.chat") {
 			return errors.New("telegram token flag requires --telegram-chat to be set")
 		}
 
-		if err := telegram.Login(token, chatId); err != nil {
+		if err := telegram.Login(token); err != nil {
 			return err
 		}
 	}
