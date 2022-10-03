@@ -8,7 +8,7 @@ import (
 
 func init() {
 	var err error
-	Command.Flags().String("log-level", "info", "log level (trace, debug, info, warning, error, fatal, panic)")
+	Command.Flags().StringP("log-level", "l", "info", "log level (trace, debug, info, warning, error, fatal, panic)")
 	if err := viper.BindPFlag("log.level", Command.Flags().Lookup("log-level")); err != nil {
 		panic(err)
 	}

@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	Command.Flags().Duration("sleep", 3*time.Second, "sleep time between queries to avoid rate limits")
+	Command.Flags().DurationP("sleep", "s", 3*time.Second, "sleep time between queries to avoid rate limits")
 	if err := viper.BindPFlag("sleep", Command.Flags().Lookup("sleep")); err != nil {
 		panic(err)
 	}

@@ -7,7 +7,7 @@ import (
 var defaultThreshold = []int{1, 7}
 
 func init() {
-	Command.Flags().IntSlice("threshold", defaultThreshold, "configure expiration notifications")
+	Command.Flags().IntSliceP("threshold", "t", defaultThreshold, "configure expiration notifications")
 	if err := viper.BindPFlag("threshold", Command.Flags().Lookup("threshold")); err != nil {
 		panic(err)
 	}

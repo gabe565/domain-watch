@@ -3,7 +3,7 @@ package cmd
 import "github.com/spf13/viper"
 
 func init() {
-	Command.Flags().Duration("every", 0, "enable cron mode and configure update interval")
+	Command.Flags().DurationP("every", "e", 0, "enable cron mode and configure update interval")
 	if err := viper.BindPFlag("every", Command.Flags().Lookup("every")); err != nil {
 		panic(err)
 	}
