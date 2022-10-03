@@ -41,13 +41,10 @@ func NewStatusChangedMessage(domain string, changes []diff.Change) (msg tgbotapi
 		case "update":
 			removed += fmt.Sprintf("\n - %s", change.From)
 			added += fmt.Sprintf("\n + %s", change.To)
-			break
 		case "create":
 			added += fmt.Sprintf("\n + %s", change.To)
-			break
 		case "delete":
 			removed += fmt.Sprintf("\n - %s", change.From)
-			break
 		}
 	}
 	msg = tgbotapi.NewMessage(

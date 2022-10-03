@@ -51,7 +51,7 @@ func (d *Domain) Run() (err error) {
 			d.TimeLeft = 0
 			l.WithError(err).Warn("failed to parse expiration date")
 		} else {
-			d.TimeLeft = date.Sub(time.Now()).Truncate(24 * time.Hour)
+			d.TimeLeft = time.Until(date).Truncate(24 * time.Hour)
 			l.WithFields(log.Fields{
 				"expires":   date,
 				"days_left": d.TimeLeft.Hours() / 24.0,
