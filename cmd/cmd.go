@@ -12,6 +12,7 @@ import (
 
 var Command = &cobra.Command{
 	Use:               "domain-watch [flags] domain...",
+	DisableAutoGenTag: true,
 	PreRunE:           preRun,
 	RunE:              run,
 	ValidArgsFunction: noFileComp,
