@@ -4,10 +4,10 @@ import (
 	"errors"
 	"github.com/gabe565/domain-watch/internal/domain"
 	"github.com/gabe565/domain-watch/internal/telegram"
-	"github.com/robfig/cron/v3"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"time"
 )
 
 var Command = &cobra.Command{
@@ -67,13 +67,10 @@ func run(cmd *cobra.Command, _ []string) (err error) {
 	if every != 0 {
 		log.Info("running as cron")
 
-		c := cron.New(cron.WithChain(cron.SkipIfStillRunning(cron.DefaultLogger)))
-		_, err := c.AddFunc("@every "+every.String(), domains.Tick)
-		if err != nil {
-			log.WithError(err).Error("failed to register job")
-			return err
+		ticker := time.NewTicker(every)
+		for range ticker.C {
+			domains.Tick()
 		}
-		c.Run()
 	}
 
 	return nil
