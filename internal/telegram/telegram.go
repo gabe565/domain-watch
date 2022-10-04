@@ -38,12 +38,12 @@ func NewStatusChangedMessage(domain string, changes []diff.Change) (msg tgbotapi
 	var added, removed string
 	for _, change := range changes {
 		switch change.Type {
-		case "update":
+		case diff.UPDATE:
 			removed += fmt.Sprintf("\n - %s", change.From)
 			added += fmt.Sprintf("\n + %s", change.To)
-		case "create":
+		case diff.CREATE:
 			added += fmt.Sprintf("\n + %s", change.To)
-		case "delete":
+		case diff.DELETE:
 			removed += fmt.Sprintf("\n - %s", change.From)
 		}
 	}
