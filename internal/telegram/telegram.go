@@ -9,28 +9,28 @@ import (
 )
 
 var (
-	bot *tgbotapi.BotAPI
+	Bot *tgbotapi.BotAPI
 )
 
 func Login(token string) (err error) {
 	if token != "" {
-		bot, err = tgbotapi.NewBotAPI(token)
+		Bot, err = tgbotapi.NewBotAPI(token)
 		if err != nil {
 			return err
 		}
 		log.WithFields(log.Fields{
-			"username": bot.Self.UserName,
+			"username": Bot.Self.UserName,
 		}).Info("auth success")
 	}
 	return nil
 }
 
 func LoggedIn() bool {
-	return bot != nil
+	return Bot != nil
 }
 
 func Send(msg tgbotapi.MessageConfig) error {
-	_, err := bot.Send(msg)
+	_, err := Bot.Send(msg)
 	return err
 }
 
