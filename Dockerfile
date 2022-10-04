@@ -23,8 +23,8 @@ RUN --mount=type=cache,target=/root/.cache \
 
 
 FROM alpine
-LABEL org.opencontainers.image.authors "Gabe Cook <gabe565@gmail.com>"
-LABEL org.opencontainers.image.source https://github.com/gabe565/domain-watch
+LABEL org.opencontainers.image.authors="Gabe Cook <gabe565@gmail.com>"
+LABEL org.opencontainers.image.source="https://github.com/gabe565/domain-watch"
 WORKDIR /app
 
 COPY --from=builder /app/domain-watch /usr/local/bin/
