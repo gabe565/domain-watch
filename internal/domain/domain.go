@@ -68,11 +68,7 @@ func (d *Domain) Run() (err error) {
 	return nil
 }
 
-func (d *Domain) CheckNotifications() error {
-	if !telegram.LoggedIn() {
-		return nil
-	}
-
+func (d *Domain) NotifyThreshold() error {
 	if d.TimeLeft != 0 {
 		daysLeft := int(d.TimeLeft.Hours() / 24)
 		for _, threshold := range viper.GetIntSlice("threshold") {
@@ -86,7 +82,10 @@ func (d *Domain) CheckNotifications() error {
 			}
 		}
 	}
+	return nil
+}
 
+func (d *Domain) NotifyStatusChange() error {
 	if d.PrevWhois != nil {
 		changes, err := diff.Diff(d.PrevWhois.Domain.Status, d.CurrWhois.Domain.Status)
 		if err != nil {
@@ -100,6 +99,18 @@ func (d *Domain) CheckNotifications() error {
 			}
 		}
 	}
+	return nil
+}
 
+func (d *Domain) CheckNotifications() error {
+	if !telegram.LoggedIn() {
+		return nil
+	}
+	if err := d.NotifyThreshold(); err != nil {
+		return err
+	}
+	if err := d.NotifyStatusChange(); err != nil {
+		return err
+	}
 	return nil
 }
