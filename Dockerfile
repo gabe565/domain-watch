@@ -27,6 +27,8 @@ LABEL org.opencontainers.image.authors="Gabe Cook <gabe565@gmail.com>"
 LABEL org.opencontainers.image.source="https://github.com/gabe565/domain-watch"
 WORKDIR /app
 
+RUN apk add --no-cache tzdata
+
 COPY --from=builder /app/domain-watch /usr/local/bin/
 
 ARG USERNAME=domain-watch
