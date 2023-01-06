@@ -45,7 +45,7 @@ jobs:
           images: |
             ghcr.io/gabe565/domain-watch
           tags: |
-            type=raw,priority=1000,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=raw,priority=1000,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
