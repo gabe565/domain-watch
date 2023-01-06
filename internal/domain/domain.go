@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/araddon/dateparse"
 	"github.com/gabe565/domain-watch/internal/telegram"
-	"github.com/likexian/whois-go"
+	"github.com/likexian/whois"
 	whoisparser "github.com/likexian/whois-parser-go"
 	"github.com/r3labs/diff"
 	log "github.com/sirupsen/logrus"
