@@ -6,7 +6,7 @@ import (
 	"github.com/gabe565/domain-watch/internal/telegram"
 	"github.com/likexian/whois"
 	whoisparser "github.com/likexian/whois-parser"
-	"github.com/r3labs/diff"
+	"github.com/r3labs/diff/v3"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"time"
