@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
-	github.com/likexian/whois-go v1.8.0
+	github.com/likexian/whois-go v1.14.4
 	github.com/likexian/whois-parser-go v1.15.4
 	github.com/r3labs/diff v1.1.0
 	github.com/sirupsen/logrus v1.9.0
