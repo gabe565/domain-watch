@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gabe565/domain-watch/internal/telegram"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	whoisparser "github.com/likexian/whois-parser-go"
+	whoisparser "github.com/likexian/whois-parser"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"net/http"

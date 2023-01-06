@@ -5,7 +5,7 @@ import (
 	"github.com/araddon/dateparse"
 	"github.com/gabe565/domain-watch/internal/telegram"
 	"github.com/likexian/whois"
-	whoisparser "github.com/likexian/whois-parser-go"
+	whoisparser "github.com/likexian/whois-parser"
 	"github.com/r3labs/diff"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
