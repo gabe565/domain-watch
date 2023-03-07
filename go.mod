@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
-	github.com/likexian/whois v1.14.4
+	github.com/likexian/whois v1.14.5
 	github.com/likexian/whois-parser v1.24.4
 	github.com/r3labs/diff/v3 v3.0.1
 	github.com/sirupsen/logrus v1.9.0
