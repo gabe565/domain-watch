@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/spf13/viper"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 func init() {

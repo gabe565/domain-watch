@@ -2,6 +2,8 @@ package domain
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/araddon/dateparse"
 	"github.com/gabe565/domain-watch/internal/telegram"
 	"github.com/likexian/whois"
@@ -9,7 +11,6 @@ import (
 	"github.com/r3labs/diff/v3"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"time"
 )
 
 type Domain struct {

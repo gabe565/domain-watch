@@ -2,12 +2,13 @@ package cmd
 
 import (
 	"errors"
+	"time"
+
 	"github.com/gabe565/domain-watch/internal/domain"
 	"github.com/gabe565/domain-watch/internal/telegram"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"time"
 )
 
 var Command = &cobra.Command{

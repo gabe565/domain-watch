@@ -3,9 +3,10 @@ package telegram
 import (
 	"bytes"
 	"encoding/json"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"net/http"
 	"net/http/httptest"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func InitTestBot() (err error) {
