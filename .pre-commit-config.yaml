@@ -15,5 +15,5 @@ repos:
         name: usage-docs
         entry: go run ./internal/cmd/docs
         language: system
-        files: ^(cmd|internal/cmd/docs)
+        types: [go]
         pass_filenames: false
