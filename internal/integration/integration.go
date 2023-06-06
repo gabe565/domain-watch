@@ -16,6 +16,7 @@ type Integration interface {
 
 var Default = map[string]Integration{
 	"telegram": &Telegram{},
+	"gotify":   &Gotify{},
 }
 
 func Flags(cmd *cobra.Command) error {

@@ -57,7 +57,7 @@ func (t *Telegram) Login(token string) (err error) {
 
 	log.WithFields(log.Fields{
 		"username": t.Bot.Self.UserName,
-	}).Info("auth success")
+	}).Info("connected to Telegram")
 	return nil
 }
 
