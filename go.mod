@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
+	github.com/go-openapi/runtime v0.17.2
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/gotify/go-api-client/v2 v2.0.4
 	github.com/likexian/whois v1.15.0
@@ -26,7 +27,6 @@ require (
 	github.com/go-openapi/jsonpointer v0.17.0 // indirect
 	github.com/go-openapi/jsonreference v0.17.0 // indirect
 	github.com/go-openapi/loads v0.17.0 // indirect
-	github.com/go-openapi/runtime v0.17.2 // indirect
 	github.com/go-openapi/spec v0.17.0 // indirect
 	github.com/go-openapi/strfmt v0.17.0 // indirect
 	github.com/go-openapi/swag v0.17.0 // indirect

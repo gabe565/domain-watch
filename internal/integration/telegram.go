@@ -32,6 +32,8 @@ func (t *Telegram) Flags(cmd *cobra.Command) error {
 		panic(err)
 	}
 
+	cmd.MarkFlagsRequiredTogether("telegram-token", "telegram-chat")
+
 	return nil
 }
 

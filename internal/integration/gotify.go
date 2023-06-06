@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	"github.com/gabe565/domain-watch/internal/util"
+	"github.com/go-openapi/runtime"
 	"github.com/gotify/go-api-client/v2/auth"
 	"github.com/gotify/go-api-client/v2/client"
 	"github.com/gotify/go-api-client/v2/client/message"
@@ -18,7 +19,7 @@ import (
 
 type Gotify struct {
 	URL    *url.URL
-	token  string
+	auth   runtime.ClientAuthInfoWriter
 	client *client.GotifyREST
 }
 
@@ -39,6 +40,8 @@ func (g *Gotify) Flags(cmd *cobra.Command) error {
 		panic(err)
 	}
 
+	cmd.MarkFlagsRequiredTogether("gotify-url", "gotify-token")
+
 	return nil
 }
 
@@ -53,9 +56,11 @@ func (g *Gotify) Setup() error {
 		return err
 	}
 
-	if g.token = viper.GetString("gotify.token"); g.token == "" {
+	token := viper.GetString("gotify.token")
+	if token == "" {
 		return fmt.Errorf("gotify %w: chat ID", util.ErrNotConfigured)
 	}
+	g.auth = auth.TokenAuth(token)
 
 	return g.Login(serverUrl)
 }
@@ -90,6 +95,6 @@ func (g *Gotify) Send(text string) error {
 		},
 	}
 
-	_, err := g.client.Message.CreateMessage(payload, auth.TokenAuth(g.token))
+	_, err := g.client.Message.CreateMessage(payload, g.auth)
 	return err
 }
