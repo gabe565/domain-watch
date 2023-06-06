@@ -3,6 +3,7 @@ package cmd
 import (
 	"time"
 
+	"github.com/gabe565/domain-watch/internal/util"
 	"github.com/spf13/viper"
 )
 
@@ -11,7 +12,7 @@ func init() {
 	if err := viper.BindPFlag("sleep", Command.Flags().Lookup("sleep")); err != nil {
 		panic(err)
 	}
-	if err := Command.RegisterFlagCompletionFunc("sleep", noFileComp); err != nil {
+	if err := Command.RegisterFlagCompletionFunc("sleep", util.NoFileComp); err != nil {
 		panic(err)
 	}
 }

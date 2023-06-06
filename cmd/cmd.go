@@ -5,7 +5,8 @@ import (
 	"time"
 
 	"github.com/gabe565/domain-watch/internal/domain"
-	"github.com/gabe565/domain-watch/internal/telegram"
+	"github.com/gabe565/domain-watch/internal/integration"
+	"github.com/gabe565/domain-watch/internal/util"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -16,11 +17,14 @@ var Command = &cobra.Command{
 	DisableAutoGenTag: true,
 	PreRunE:           preRun,
 	RunE:              run,
-	ValidArgsFunction: noFileComp,
+	ValidArgsFunction: util.NoFileComp,
 }
 
 func init() {
 	cobra.OnInitialize(initViper, initLog)
+	if err := integration.Flags(Command); err != nil {
+		panic(err)
+	}
 }
 
 var domainNames []string
@@ -39,16 +43,10 @@ func preRun(cmd *cobra.Command, args []string) (err error) {
 		return errors.New("missing domain")
 	}
 
-	token := viper.GetString("telegram.token")
-	if token != "" {
-		if !viper.IsSet("telegram.chat") {
-			return errors.New("telegram token flag requires --telegram-chat to be set")
-		}
-
-		if err := telegram.Login(token); err != nil {
-			return err
-		}
+	if err := integration.Setup(); err != nil {
+		return err
 	}
+
 	return nil
 }
 

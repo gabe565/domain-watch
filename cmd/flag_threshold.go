@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/gabe565/domain-watch/internal/util"
 	"github.com/spf13/viper"
 )
 
@@ -11,7 +12,7 @@ func init() {
 	if err := viper.BindPFlag("threshold", Command.Flags().Lookup("threshold")); err != nil {
 		panic(err)
 	}
-	if err := Command.RegisterFlagCompletionFunc("threshold", noFileComp); err != nil {
+	if err := Command.RegisterFlagCompletionFunc("threshold", util.NoFileComp); err != nil {
 		panic(err)
 	}
 }

@@ -1,4 +1,4 @@
-package telegram
+package integration
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func InitTestBot() (err error) {
+func TelegramTestSetup() (err error) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/bot/getMe" {
 			var buf bytes.Buffer
@@ -34,10 +34,7 @@ func InitTestBot() (err error) {
 	}))
 	defer server.Close()
 
-	Bot, err = tgbotapi.NewBotAPIWithAPIEndpoint("", server.URL+"/bot%s/%s")
-	if err != nil {
-		return err
-	}
-
-	return nil
+	telegram := Get("telegram").(*Telegram)
+	telegram.Bot, err = tgbotapi.NewBotAPIWithAPIEndpoint("", server.URL+"/bot%s/%s")
+	return err
 }

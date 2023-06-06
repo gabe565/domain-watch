@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gabe565/domain-watch/internal/telegram"
+	"github.com/gabe565/domain-watch/internal/integration"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	whoisparser "github.com/likexian/whois-parser"
 	log "github.com/sirupsen/logrus"
@@ -108,7 +108,7 @@ func TestDomain_NotifyThreshold(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := telegram.InitTestBot(); err != nil {
+			if err := integration.TelegramTestSetup(); err != nil {
 				t.Error(err)
 				return
 			}
@@ -128,7 +128,7 @@ func TestDomain_NotifyThreshold(t *testing.T) {
 				}
 			}))
 			defer server.Close()
-			telegram.Bot.SetAPIEndpoint(server.URL + "/bot%s/%s")
+			integration.Get("telegram").(*integration.Telegram).Bot.SetAPIEndpoint(server.URL + "/bot%s/%s")
 
 			d := &Domain{
 				Name:               tt.fields.Name,
@@ -192,7 +192,7 @@ func TestDomain_NotifyStatusChange(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := telegram.InitTestBot(); err != nil {
+			if err := integration.TelegramTestSetup(); err != nil {
 				t.Error(err)
 				return
 			}
@@ -212,7 +212,7 @@ func TestDomain_NotifyStatusChange(t *testing.T) {
 				}
 			}))
 			defer server.Close()
-			telegram.Bot.SetAPIEndpoint(server.URL + "/bot%s/%s")
+			integration.Get("telegram").(*integration.Telegram).Bot.SetAPIEndpoint(server.URL + "/bot%s/%s")
 
 			d := &Domain{
 				Name:               tt.fields.Name,

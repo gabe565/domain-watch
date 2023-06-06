@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/gabe565/domain-watch/internal/integration"
+	"github.com/gabe565/domain-watch/internal/message"
+
 	"github.com/araddon/dateparse"
-	"github.com/gabe565/domain-watch/internal/telegram"
 	"github.com/likexian/whois"
 	whoisparser "github.com/likexian/whois-parser"
 	"github.com/r3labs/diff/v3"
@@ -74,8 +76,8 @@ func (d *Domain) NotifyThreshold() error {
 		daysLeft := int(d.TimeLeft.Hours() / 24)
 		for _, threshold := range viper.GetIntSlice("threshold") {
 			if d.TriggeredThreshold != threshold && daysLeft <= threshold {
-				msg := telegram.NewThresholdMessage(d.Name, daysLeft)
-				if err := telegram.Send(msg); err != nil {
+				msg := message.NewThresholdMessage(d.Name, daysLeft)
+				if err := integration.Send(msg); err != nil {
 					return err
 				}
 				d.TriggeredThreshold = threshold
@@ -94,8 +96,8 @@ func (d *Domain) NotifyStatusChange() error {
 		}
 
 		if len(changes) > 0 {
-			msg := telegram.NewStatusChangedMessage(d.Name, changes)
-			if err := telegram.Send(msg); err != nil {
+			msg := message.NewStatusChangedMessage(d.Name, changes)
+			if err := integration.Send(msg); err != nil {
 				return err
 			}
 		}
@@ -104,9 +106,6 @@ func (d *Domain) NotifyStatusChange() error {
 }
 
 func (d *Domain) CheckNotifications() error {
-	if !telegram.LoggedIn() {
-		return nil
-	}
 	if err := d.NotifyThreshold(); err != nil {
 		return err
 	}
