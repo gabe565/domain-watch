@@ -20,7 +20,7 @@ func NewStatusChangedMessage(domain string, changes []diff.Change) string {
 		}
 	}
 	message := fmt.Sprintf(
-		"The statuses on %s have changed. Here are the changes:\n```%s%s```",
+		"The statuses on %s have changed. Here are the changes:\n```%s%s\n```",
 		domain,
 		removed,
 		added,

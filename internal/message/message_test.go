@@ -25,7 +25,7 @@ func TestNewStatusChangedMessage(t *testing.T) {
 					{Type: diff.CREATE, To: "a"},
 				},
 			},
-			"The statuses on example.com have changed. Here are the changes:\n```\n + a```",
+			"The statuses on example.com have changed. Here are the changes:\n```\n + a\n```",
 		},
 		{
 			"update",
@@ -35,7 +35,7 @@ func TestNewStatusChangedMessage(t *testing.T) {
 					{Type: diff.UPDATE, From: "a", To: "b"},
 				},
 			},
-			"The statuses on example.com have changed. Here are the changes:\n```\n - a\n + b```",
+			"The statuses on example.com have changed. Here are the changes:\n```\n - a\n + b\n```",
 		},
 		{
 			"delete",
@@ -45,7 +45,7 @@ func TestNewStatusChangedMessage(t *testing.T) {
 					{Type: diff.DELETE, From: "a"},
 				},
 			},
-			"The statuses on example.com have changed. Here are the changes:\n```\n - a```",
+			"The statuses on example.com have changed. Here are the changes:\n```\n - a\n```",
 		},
 	}
 	for _, tt := range tests {
