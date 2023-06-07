@@ -77,9 +77,7 @@ func (d *Domain) NotifyThreshold() error {
 		for _, threshold := range viper.GetIntSlice("threshold") {
 			if d.TriggeredThreshold != threshold && daysLeft <= threshold {
 				msg := message.NewThresholdMessage(d.Name, daysLeft)
-				if err := integration.Send(msg); err != nil {
-					return err
-				}
+				integration.Send(msg)
 				d.TriggeredThreshold = threshold
 				break
 			}
@@ -97,9 +95,7 @@ func (d *Domain) NotifyStatusChange() error {
 
 		if len(changes) > 0 {
 			msg := message.NewStatusChangedMessage(d.Name, changes)
-			if err := integration.Send(msg); err != nil {
-				return err
-			}
+			integration.Send(msg)
 		}
 	}
 	return nil

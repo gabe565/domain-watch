@@ -49,13 +49,12 @@ func Setup() error {
 	return nil
 }
 
-func Send(message string) error {
-	for _, integration := range Default {
+func Send(message string) {
+	for name, integration := range Default {
 		if err := integration.Send(message); err != nil {
-			return err
+			log.WithField("integration", name).Error(err)
 		}
 	}
-	return nil
 }
 
 func Get(key string) Integration {
