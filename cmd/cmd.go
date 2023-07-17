@@ -6,6 +6,7 @@ import (
 
 	"github.com/gabe565/domain-watch/internal/domain"
 	"github.com/gabe565/domain-watch/internal/integration"
+	"github.com/gabe565/domain-watch/internal/metrics"
 	"github.com/gabe565/domain-watch/internal/util"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -25,6 +26,7 @@ func init() {
 	if err := integration.Flags(Command); err != nil {
 		panic(err)
 	}
+	metrics.Flags(Command)
 }
 
 var domainNames []string
@@ -52,6 +54,12 @@ func preRun(cmd *cobra.Command, args []string) (err error) {
 
 func run(cmd *cobra.Command, _ []string) (err error) {
 	cmd.SilenceUsage = true
+
+	go func() {
+		if err := metrics.Serve(cmd); err != nil {
+			log.Error(err)
+		}
+	}()
 
 	domains := domain.Domains{
 		Sleep:   viper.GetDuration("sleep"),

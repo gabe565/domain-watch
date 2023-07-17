@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/araddon/dateparse"
 	"github.com/gabe565/domain-watch/internal/integration"
 	"github.com/gabe565/domain-watch/internal/message"
-
-	"github.com/araddon/dateparse"
 	"github.com/likexian/whois"
 	whoisparser "github.com/likexian/whois-parser"
 	"github.com/r3labs/diff/v3"
@@ -19,6 +18,7 @@ type Domain struct {
 	Name               string
 	CurrWhois          whoisparser.WhoisInfo
 	PrevWhois          *whoisparser.WhoisInfo
+	ExpiresAt          time.Time
 	TimeLeft           time.Duration
 	TriggeredThreshold int
 }
@@ -48,15 +48,14 @@ func (d *Domain) Run() (err error) {
 	l := d.Log()
 
 	if d.CurrWhois.Domain.ExpirationDate != "" {
-		var date time.Time
-		date, err = dateparse.ParseStrict(d.CurrWhois.Domain.ExpirationDate)
+		d.ExpiresAt, err = dateparse.ParseStrict(d.CurrWhois.Domain.ExpirationDate)
 		if err != nil {
 			d.TimeLeft = 0
 			l.WithError(err).Warn("failed to parse expiration date")
 		} else {
-			d.TimeLeft = time.Until(date).Truncate(24 * time.Hour)
+			d.TimeLeft = time.Until(d.ExpiresAt).Truncate(24 * time.Hour)
 			l.WithFields(log.Fields{
-				"expires":   date,
+				"expires":   d.ExpiresAt,
 				"days_left": d.TimeLeft.Hours() / 24.0,
 			}).Info("fetched whois")
 		}
