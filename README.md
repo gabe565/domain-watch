@@ -34,8 +34,8 @@ docker run -d \
 
 A Helm chart is available for Kubernetes deployment.
 For more information, see
-[Artifact Hub](https://artifacthub.io/packages/helm/gabe565/domain-watch) or
-[gabe565/charts](https://github.com/gabe565/charts/tree/main/charts/domain-watch).
+[charts.gabe565.com](https://charts.gabe565.com/charts/domain-watch/) or
+[Artifact Hub](https://artifacthub.io/packages/helm/gabe565/domain-watch).
 
 ## Usage
 
