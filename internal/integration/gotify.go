@@ -96,9 +96,10 @@ func (g *Gotify) Send(text string) error {
 		return nil
 	}
 
+	priority := 5
 	payload := model.MessageExternal{
 		Message:  text,
-		Priority: 5,
+		Priority: &priority,
 		Extras: map[string]any{
 			"client::display": map[string]any{
 				"contentType": "text/markdown",
