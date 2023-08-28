@@ -10,9 +10,9 @@ import (
 
 var completionFlag string
 
-func init() {
-	Command.Flags().StringVar(&completionFlag, "completion", "", "Output command-line completion code for the specified shell. Can be 'bash', 'zsh', 'fish', or 'powershell'.")
-	err := Command.RegisterFlagCompletionFunc("completion", completionCompletion)
+func registerCompletionFlag(cmd *cobra.Command) {
+	cmd.Flags().StringVar(&completionFlag, "completion", "", "Output command-line completion code for the specified shell. Can be 'bash', 'zsh', 'fish', or 'powershell'.")
+	err := cmd.RegisterFlagCompletionFunc("completion", completionCompletion)
 	if err != nil {
 		panic(err)
 	}

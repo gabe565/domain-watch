@@ -13,25 +13,34 @@ import (
 	"github.com/spf13/viper"
 )
 
-var Command = &cobra.Command{
-	Use:               "domain-watch [flags] domain...",
-	DisableAutoGenTag: true,
-	PreRunE:           preRun,
-	RunE:              run,
-	ValidArgsFunction: util.NoFileComp,
-}
+func NewCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:               "domain-watch [flags] domain...",
+		DisableAutoGenTag: true,
+		PreRunE:           preRun,
+		RunE:              run,
+		ValidArgsFunction: util.NoFileComp,
+	}
 
-func init() {
-	cobra.OnInitialize(initViper, initLog)
-	if err := integration.Flags(Command); err != nil {
+	if err := integration.Flags(cmd); err != nil {
 		panic(err)
 	}
-	metrics.Flags(Command)
+	metrics.Flags(cmd)
+	registerCompletionFlag(cmd)
+	registerEveryFlag(cmd)
+	registerLogFlags(cmd)
+	registerSleepFlag(cmd)
+	registerThresholdFlag(cmd)
+
+	return cmd
 }
 
 var domainNames []string
 
 func preRun(cmd *cobra.Command, args []string) (err error) {
+	initViper()
+	initLog(cmd)
+
 	if completionFlag != "" {
 		return completion(cmd, domainNames)
 	}

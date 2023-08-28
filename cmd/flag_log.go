@@ -6,13 +6,13 @@ import (
 	"github.com/spf13/viper"
 )
 
-func init() {
+func registerLogFlags(cmd *cobra.Command) {
 	var err error
-	Command.Flags().StringP("log-level", "l", "info", "log level (trace, debug, info, warning, error, fatal, panic)")
-	if err := viper.BindPFlag("log.level", Command.Flags().Lookup("log-level")); err != nil {
+	cmd.Flags().StringP("log-level", "l", "info", "log level (trace, debug, info, warning, error, fatal, panic)")
+	if err := viper.BindPFlag("log.level", cmd.Flags().Lookup("log-level")); err != nil {
 		panic(err)
 	}
-	err = Command.RegisterFlagCompletionFunc(
+	err = cmd.RegisterFlagCompletionFunc(
 		"log-level",
 		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return []string{
@@ -29,11 +29,11 @@ func init() {
 		panic(err)
 	}
 
-	Command.Flags().String("log-format", "text", "log formatter (text, json)")
-	if err := viper.BindPFlag("log.format", Command.Flags().Lookup("log-format")); err != nil {
+	cmd.Flags().String("log-format", "text", "log formatter (text, json)")
+	if err := viper.BindPFlag("log.format", cmd.Flags().Lookup("log-format")); err != nil {
 		panic(err)
 	}
-	err = Command.RegisterFlagCompletionFunc(
+	err = cmd.RegisterFlagCompletionFunc(
 		"log-format",
 		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return []string{"text", "json"}, cobra.ShellCompDirectiveNoFileComp
@@ -43,12 +43,12 @@ func init() {
 	}
 }
 
-func initLog() {
+func initLog(cmd *cobra.Command) {
 	logLevel := viper.GetString("log.level")
 	parsedLevel, err := log.ParseLevel(logLevel)
 	if err != nil {
 		log.WithField("log-level", logLevel).Warn("invalid log level. defaulting to info.")
-		err = Command.Flags().Set("log-level", "info")
+		err = cmd.Flags().Set("log-level", "info")
 		if err != nil {
 			panic(err)
 		}
@@ -64,7 +64,7 @@ func initLog() {
 		log.SetFormatter(&log.JSONFormatter{})
 	default:
 		log.WithField("log-format", logFormat).Warn("invalid log formatter. defaulting to text.")
-		err = Command.Flags().Set("log-format", "text")
+		err = cmd.Flags().Set("log-format", "text")
 		if err != nil {
 			panic(err)
 		}
