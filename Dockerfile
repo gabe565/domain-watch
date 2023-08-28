@@ -21,8 +21,6 @@ RUN --mount=type=cache,target=/root/.cache \
 
 
 FROM alpine:3.18
-LABEL org.opencontainers.image.authors="Gabe Cook <gabe565@gmail.com>"
-LABEL org.opencontainers.image.source="https://github.com/gabe565/domain-watch"
 WORKDIR /app
 
 RUN apk add --no-cache tzdata
