@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io"
-	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -22,24 +20,22 @@ func completionCompletion(cmd *cobra.Command, args []string, toComplete string) 
 	return []string{"bash", "zsh", "fish", "powershell"}, cobra.ShellCompDirectiveNoFileComp
 }
 
-var completionWriter io.Writer = os.Stdout
-
 func completion(cmd *cobra.Command, args []string) error {
 	switch completionFlag {
 	case "bash":
-		if err := cmd.Root().GenBashCompletion(completionWriter); err != nil {
+		if err := cmd.Root().GenBashCompletion(cmd.OutOrStdout()); err != nil {
 			return err
 		}
 	case "zsh":
-		if err := cmd.Root().GenZshCompletion(completionWriter); err != nil {
+		if err := cmd.Root().GenZshCompletion(cmd.OutOrStdout()); err != nil {
 			return err
 		}
 	case "fish":
-		if err := cmd.Root().GenFishCompletion(completionWriter, true); err != nil {
+		if err := cmd.Root().GenFishCompletion(cmd.OutOrStdout(), true); err != nil {
 			return err
 		}
 	case "powershell":
-		if err := cmd.Root().GenPowerShellCompletionWithDesc(completionWriter); err != nil {
+		if err := cmd.Root().GenPowerShellCompletionWithDesc(cmd.OutOrStdout()); err != nil {
 			return err
 		}
 	default:
