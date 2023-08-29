@@ -39,7 +39,7 @@ changelog:
       - '^test'
 brews:
   - homepage: https://github.com/gabe565/domain-watch
-    description: Watch whois reports and notify when statuses change or expiration is upcoming
+    description: Get notified about domain changes as they happen
     license: GPL-3.0
     repository:
       owner: gabe565
@@ -98,7 +98,7 @@ nfpms:
   - id: packages
     vendor: Gabe Cook
     homepage: https://github.com/gabe565/domain-watch
-    description: Watch whois reports and notify when statuses change or expiration is upcoming
+    description: Get notified about domain changes as they happen
     license: GPL-3.0
     maintainer: Gabe Cook <gabe565@gmail.com>
     formats:
@@ -143,7 +143,7 @@ publishers:
 aurs:
   - name: "{{ .ProjectName }}-bin"
     homepage: https://github.com/gabe565/domain-watch
-    description: Watch whois reports and notify when statuses change or expiration is upcoming
+    description: Get notified about domain changes as they happen
     maintainers:
       - Gabe Cook <gabe565@gmail.com>
     license: GPL-3.0

@@ -1,5 +1,5 @@
 [Unit]
-Description=Watch whois reports and notify when statuses change or expiration is incoming
+Description=Get notified about domain changes as they happen
 Documentation=https://github.com/gabe565/domain-watch
 After=network.target
 
