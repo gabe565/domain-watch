@@ -13,6 +13,7 @@ and sends the following notifications:
 - Status code has changed
 
 Supported notification providers:
+- Gotify
 - Telegram
 
 ## Install
