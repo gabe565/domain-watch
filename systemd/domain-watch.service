@@ -1,0 +1,14 @@
+[Unit]
+Description=Watch whois reports and notify when statuses change or expiration is incoming
+Documentation=https://github.com/gabe565/domain-watch
+After=network.target
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/domain-watch
+TimeoutStopSec=20s
+User=daemon
+Group=daemon
+
+[Install]
+WantedBy=multi-user.target
