@@ -2,7 +2,7 @@
 
 <img src="./assets/icon.svg" alt="domain-watch Icon" width="92" align="right">
 
-[![Docker Build](https://github.com/gabe565/domain-watch/actions/workflows/docker.yml/badge.svg)](https://github.com/gabe565/domain-watch/actions/workflows/docker.yml)
+[![Build](https://github.com/gabe565/domain-watch/actions/workflows/build.yml/badge.svg)](https://github.com/gabe565/domain-watch/actions/workflows/build.yml)
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/gabe565)](https://artifacthub.io/packages/helm/gabe565/domain-watch)
 
 Get notified about domain changes as they happen.
