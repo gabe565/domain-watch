@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
-	github.com/gotify/server/v2 v2.3.0
+	github.com/gotify/server/v2 v2.4.0
 	github.com/likexian/whois v1.15.1
 	github.com/likexian/whois-parser v1.24.9
 	github.com/prometheus/client_golang v1.16.0
@@ -41,8 +41,8 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	golang.org/x/net v0.14.0 // indirect
-	golang.org/x/sys v0.11.0 // indirect
-	golang.org/x/text v0.12.0 // indirect
+	golang.org/x/sys v0.12.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
