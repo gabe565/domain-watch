@@ -7,7 +7,7 @@ require (
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/gotify/server/v2 v2.4.0
 	github.com/likexian/whois v1.15.1
-	github.com/likexian/whois-parser v1.24.9
+	github.com/likexian/whois-parser v1.24.10
 	github.com/prometheus/client_golang v1.17.0
 	github.com/r3labs/diff/v3 v3.0.1
 	github.com/sirupsen/logrus v1.9.3
