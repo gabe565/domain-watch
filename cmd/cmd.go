@@ -8,7 +8,6 @@ import (
 	"github.com/gabe565/domain-watch/internal/domain"
 	"github.com/gabe565/domain-watch/internal/integration"
 	"github.com/gabe565/domain-watch/internal/metrics"
-	"github.com/gabe565/domain-watch/internal/util"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -18,7 +17,7 @@ func NewCommand() *cobra.Command {
 		Use:               "domain-watch [flags] domain...",
 		DisableAutoGenTag: true,
 		RunE:              run,
-		ValidArgsFunction: util.NoFileComp,
+		ValidArgsFunction: cobra.NoFileCompletions,
 	}
 	cfg := config.New()
 	cfg.RegisterFlags(cmd)
