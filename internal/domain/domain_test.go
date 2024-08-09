@@ -8,11 +8,11 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gabe565/domain-watch/internal/config"
 	"github.com/gabe565/domain-watch/internal/integration"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	whoisparser "github.com/likexian/whois-parser"
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 func TestDomain_Log(t *testing.T) {
@@ -87,8 +87,6 @@ func TestDomain_Whois(t *testing.T) {
 }
 
 func TestDomain_NotifyThreshold(t *testing.T) {
-	viper.Set("threshold", []int{1, 7})
-
 	type fields struct {
 		Name               string
 		CurrWhois          whoisparser.WhoisInfo
@@ -131,6 +129,8 @@ func TestDomain_NotifyThreshold(t *testing.T) {
 			integration.Get("telegram").(*integration.Telegram).Bot.SetAPIEndpoint(server.URL + "/bot%s/%s")
 
 			d := &Domain{
+				conf: &config.Config{Threshold: []int{1, 7}},
+
 				Name:               tt.fields.Name,
 				CurrWhois:          tt.fields.CurrWhois,
 				PrevWhois:          tt.fields.PrevWhois,

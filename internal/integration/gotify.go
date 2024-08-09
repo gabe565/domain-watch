@@ -8,11 +8,10 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/gabe565/domain-watch/internal/config"
 	"github.com/gabe565/domain-watch/internal/util"
 	"github.com/gotify/server/v2/model"
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 type Gotify struct {
@@ -20,43 +19,19 @@ type Gotify struct {
 	token string
 }
 
-func (g *Gotify) Flags(cmd *cobra.Command) error {
-	cmd.Flags().String("gotify-url", "", "Gotify URL (include https:// and port if non-standard)")
-	if err := viper.BindPFlag("gotify.url", cmd.Flags().Lookup("gotify-url")); err != nil {
-		panic(err)
-	}
-	if err := cmd.RegisterFlagCompletionFunc("gotify-url", util.NoFileComp); err != nil {
-		panic(err)
-	}
-
-	cmd.Flags().String("gotify-token", "", "Gotify app token")
-	if err := viper.BindPFlag("gotify.token", cmd.Flags().Lookup("gotify-token")); err != nil {
-		panic(err)
-	}
-	if err := cmd.RegisterFlagCompletionFunc("gotify-token", util.NoFileComp); err != nil {
-		panic(err)
-	}
-
-	cmd.MarkFlagsRequiredTogether("gotify-url", "gotify-token")
-
-	return nil
-}
-
-func (g *Gotify) Setup() (err error) {
-	host := viper.GetString("gotify.url")
-	if host == "" {
+func (g *Gotify) Setup(conf *config.Config) (err error) {
+	if conf.GotifyURL == "" {
 		return fmt.Errorf("gotify %w: token", util.ErrNotConfigured)
 	}
 
-	g.URL, err = url.Parse(host)
+	g.URL, err = url.Parse(conf.GotifyURL)
 	if err != nil {
 		return err
 	}
 
-	if g.token = viper.GetString("gotify.token"); g.token == "" {
+	if g.token = conf.GotifyToken; g.token == "" {
 		return fmt.Errorf("gotify %w: chat ID", util.ErrNotConfigured)
 	}
-
 	return g.Login()
 }
 

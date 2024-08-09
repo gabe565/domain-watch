@@ -1,90 +1,70 @@
 package cmd
 
 import (
-	"errors"
+	"context"
 	"time"
 
+	"github.com/gabe565/domain-watch/internal/config"
 	"github.com/gabe565/domain-watch/internal/domain"
 	"github.com/gabe565/domain-watch/internal/integration"
 	"github.com/gabe565/domain-watch/internal/metrics"
 	"github.com/gabe565/domain-watch/internal/util"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:               "domain-watch [flags] domain...",
 		DisableAutoGenTag: true,
-		PreRunE:           preRun,
 		RunE:              run,
 		ValidArgsFunction: util.NoFileComp,
 	}
-
-	if err := integration.Flags(cmd); err != nil {
-		panic(err)
-	}
-	metrics.Flags(cmd)
-	registerCompletionFlag(cmd)
-	registerEveryFlag(cmd)
-	registerLogFlags(cmd)
-	registerSleepFlag(cmd)
-	registerThresholdFlag(cmd)
-
+	cfg := config.New()
+	cfg.RegisterFlags(cmd)
+	config.RegisterCompletions(cmd)
+	cmd.SetContext(config.NewContext(context.Background(), cfg))
 	return cmd
 }
 
-var domainNames []string
-
-func preRun(cmd *cobra.Command, args []string) (err error) {
-	initViper()
-	initLog(cmd)
-
-	if completionFlag != "" {
-		return completion(cmd, domainNames)
-	}
-
-	if v := viper.GetStringSlice("domains"); v != nil {
-		args = append(domainNames, v...)
-	}
-	domainNames = args
-
-	if len(domainNames) == 0 {
-		return errors.New("missing domain")
-	}
-
-	if err := integration.Setup(); err != nil {
+func run(cmd *cobra.Command, args []string) (err error) {
+	conf, err := config.Load(cmd, args)
+	if err != nil {
 		return err
 	}
 
-	return nil
-}
+	if conf.Completion != "" {
+		return completion(cmd, conf.Completion)
+	}
 
-func run(cmd *cobra.Command, _ []string) (err error) {
+	if err := integration.Setup(conf); err != nil {
+		return err
+	}
+
 	cmd.SilenceUsage = true
 
-	go func() {
-		if err := metrics.Serve(cmd); err != nil {
-			log.Error(err)
-		}
-	}()
+	if conf.MetricsEnabled {
+		go func() {
+			if err := metrics.Serve(conf); err != nil {
+				log.Error(err)
+			}
+		}()
+	}
 
 	domains := domain.Domains{
-		Sleep:   viper.GetDuration("sleep"),
-		Domains: make([]*domain.Domain, 0, len(domainNames)),
+		Sleep:   conf.Sleep,
+		Domains: make([]*domain.Domain, 0, len(conf.Domains)),
 	}
-	for _, domainName := range domainNames {
-		domains.Add(domain.Domain{Name: domainName})
+	for _, domainName := range conf.Domains {
+		domains.Add(domain.New(conf, domainName))
 	}
 
 	domains.Tick()
 
-	every := viper.GetDuration("every")
-	if every != 0 {
+	if conf.Every != 0 {
 		log.Info("running as cron")
 
-		ticker := time.NewTicker(every)
+		ticker := time.NewTicker(conf.Every)
 		for range ticker.C {
 			domains.Tick()
 		}

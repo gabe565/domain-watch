@@ -5,16 +5,22 @@ import (
 	"time"
 
 	"github.com/araddon/dateparse"
+	"github.com/gabe565/domain-watch/internal/config"
 	"github.com/gabe565/domain-watch/internal/integration"
 	"github.com/gabe565/domain-watch/internal/message"
 	"github.com/likexian/whois"
 	whoisparser "github.com/likexian/whois-parser"
 	"github.com/r3labs/diff/v3"
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
+func New(conf *config.Config, name string) Domain {
+	return Domain{conf: conf, Name: name}
+}
+
 type Domain struct {
+	conf *config.Config
+
 	Name               string
 	CurrWhois          whoisparser.WhoisInfo
 	PrevWhois          *whoisparser.WhoisInfo
@@ -73,7 +79,7 @@ func (d *Domain) Run() (err error) {
 func (d *Domain) NotifyThreshold() error {
 	if d.TimeLeft != 0 {
 		daysLeft := int(d.TimeLeft.Hours() / 24)
-		for _, threshold := range viper.GetIntSlice("threshold") {
+		for _, threshold := range d.conf.Threshold {
 			if d.TriggeredThreshold != threshold && daysLeft <= threshold {
 				msg := message.NewThresholdMessage(d.Name, daysLeft)
 				integration.Send(msg)

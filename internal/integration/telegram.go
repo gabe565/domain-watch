@@ -3,11 +3,10 @@ package integration
 import (
 	"fmt"
 
+	"github.com/gabe565/domain-watch/internal/config"
 	"github.com/gabe565/domain-watch/internal/util"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 type Telegram struct {
@@ -15,43 +14,19 @@ type Telegram struct {
 	Bot    *tgbotapi.BotAPI
 }
 
-func (t *Telegram) Flags(cmd *cobra.Command) error {
-	cmd.Flags().String("telegram-token", "", "Telegram token")
-	if err := viper.BindPFlag("telegram.token", cmd.Flags().Lookup("telegram-token")); err != nil {
-		panic(err)
-	}
-	if err := cmd.RegisterFlagCompletionFunc("telegram-token", util.NoFileComp); err != nil {
-		panic(err)
+func (t *Telegram) Setup(conf *config.Config) error {
+	if t.ChatId = conf.TelegramChat; t.ChatId == 0 {
+		return fmt.Errorf("telegram %w: chat ID", util.ErrNotConfigured)
 	}
 
-	cmd.Flags().Int64("telegram-chat", 0, "Telegram chat ID")
-	if err := viper.BindPFlag("telegram.chat", cmd.Flags().Lookup("telegram-chat")); err != nil {
-		panic(err)
-	}
-	if err := cmd.RegisterFlagCompletionFunc("telegram-chat", util.NoFileComp); err != nil {
-		panic(err)
-	}
-
-	cmd.MarkFlagsRequiredTogether("telegram-token", "telegram-chat")
-
-	return nil
+	return t.Login(conf.TelegramToken)
 }
 
-func (t *Telegram) Setup() error {
-	token := viper.GetString("telegram.token")
+func (t *Telegram) Login(token string) (err error) {
 	if token == "" {
 		return fmt.Errorf("telegram %w: token", util.ErrNotConfigured)
 	}
 
-	t.ChatId = viper.GetInt64("telegram.chat")
-	if t.ChatId == 0 {
-		return fmt.Errorf("telegram %w: chat ID", util.ErrNotConfigured)
-	}
-
-	return t.Login(token)
-}
-
-func (t *Telegram) Login(token string) (err error) {
 	t.Bot, err = tgbotapi.NewBotAPI(token)
 	if err != nil {
 		return err
