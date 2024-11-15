@@ -1,4 +1,4 @@
-module github.com/gabe565/domain-watch
+module gabe565.com/domain-watch
 
 go 1.21.6
 

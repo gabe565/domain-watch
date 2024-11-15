@@ -3,8 +3,8 @@ package integration
 import (
 	"errors"
 
-	"github.com/gabe565/domain-watch/internal/config"
-	"github.com/gabe565/domain-watch/internal/util"
+	"gabe565.com/domain-watch/internal/config"
+	"gabe565.com/domain-watch/internal/util"
 	log "github.com/sirupsen/logrus"
 )
 

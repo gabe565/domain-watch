@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/gabe565/domain-watch/cmd"
+	"gabe565.com/domain-watch/cmd"
 	"github.com/spf13/cobra/doc"
 )
 

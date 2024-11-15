@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/gabe565/domain-watch/cmd"
+	"gabe565.com/domain-watch/cmd"
 	log "github.com/sirupsen/logrus"
 )
 

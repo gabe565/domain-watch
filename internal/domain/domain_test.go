@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gabe565/domain-watch/internal/config"
-	"github.com/gabe565/domain-watch/internal/integration"
+	"gabe565.com/domain-watch/internal/config"
+	"gabe565.com/domain-watch/internal/integration"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	whoisparser "github.com/likexian/whois-parser"
 	log "github.com/sirupsen/logrus"

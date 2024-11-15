@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gabe565/domain-watch/cmd"
+	"gabe565.com/domain-watch/cmd"
 	"github.com/spf13/cobra/doc"
 	flag "github.com/spf13/pflag"
 )

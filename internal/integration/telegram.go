@@ -3,8 +3,8 @@ package integration
 import (
 	"fmt"
 
-	"github.com/gabe565/domain-watch/internal/config"
-	"github.com/gabe565/domain-watch/internal/util"
+	"gabe565.com/domain-watch/internal/config"
+	"gabe565.com/domain-watch/internal/util"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	log "github.com/sirupsen/logrus"
 )

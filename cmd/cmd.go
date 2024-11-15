@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/gabe565/domain-watch/internal/config"
-	"github.com/gabe565/domain-watch/internal/domain"
-	"github.com/gabe565/domain-watch/internal/integration"
-	"github.com/gabe565/domain-watch/internal/metrics"
+	"gabe565.com/domain-watch/internal/config"
+	"gabe565.com/domain-watch/internal/domain"
+	"gabe565.com/domain-watch/internal/integration"
+	"gabe565.com/domain-watch/internal/metrics"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

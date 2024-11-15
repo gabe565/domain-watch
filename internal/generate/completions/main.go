@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/gabe565/domain-watch/cmd"
+	"gabe565.com/domain-watch/cmd"
 )
 
 var Shells = []string{"bash", "zsh", "fish"}
