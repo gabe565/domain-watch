@@ -11,6 +11,8 @@ import (
 	"gabe565.com/domain-watch/internal/integration"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	whoisparser "github.com/likexian/whois-parser"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestDomain_Whois(t *testing.T) {
@@ -25,10 +27,10 @@ func TestDomain_Whois(t *testing.T) {
 		name       string
 		fields     fields
 		wantDomain string
-		wantErr    bool
+		wantErr    require.ErrorAssertionFunc
 	}{
-		{"example.com", fields{Name: "example.com"}, "example.com", false},
-		{"a", fields{Name: "a"}, "", true},
+		{"example.com", fields{Name: "example.com"}, "example.com", require.NoError},
+		{"a", fields{Name: "a"}, "", require.Error},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -40,14 +42,9 @@ func TestDomain_Whois(t *testing.T) {
 				TriggeredThreshold: tt.fields.TriggeredThreshold,
 			}
 			got, err := d.Whois()
-			if err != nil {
-				if !tt.wantErr {
-					t.Errorf("Whois() error = %v, wantErr %v", err, tt.wantErr)
-				}
-				return
-			}
-			if got.Domain.Domain != tt.wantDomain {
-				t.Errorf("Whois() got domain = %v, want domain %v", got.Domain.Domain, tt.wantDomain)
+			tt.wantErr(t, err)
+			if err == nil {
+				assert.Equal(t, tt.wantDomain, got.Domain.Domain)
 			}
 		})
 	}
@@ -65,34 +62,26 @@ func TestDomain_NotifyThreshold(t *testing.T) {
 		name       string
 		fields     fields
 		wantNotify bool
-		wantErr    bool
+		wantErr    require.ErrorAssertionFunc
 	}{
-		{"example.com 30d", fields{Name: "example.com", TimeLeft: 30 * 24 * time.Hour}, false, false},
-		{"example.com 7d", fields{Name: "example.com", TimeLeft: 7 * 24 * time.Hour}, true, false},
-		{"example.com 1d", fields{Name: "example.com", TimeLeft: 24 * time.Hour}, true, false},
+		{"example.com 30d", fields{Name: "example.com", TimeLeft: 30 * 24 * time.Hour}, false, require.NoError},
+		{"example.com 7d", fields{Name: "example.com", TimeLeft: 7 * 24 * time.Hour}, true, require.NoError},
+		{"example.com 1d", fields{Name: "example.com", TimeLeft: 24 * time.Hour}, true, require.NoError},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := integration.TelegramTestSetup(); err != nil {
-				t.Error(err)
-				return
-			}
+			integration.TelegramTestSetup(t)
 			gotNotify := false
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				if r.URL.Path != "/bot/sendMessage" {
-					t.Errorf("Expected to request /bot/sendMessage, got: %s", r.URL.Path)
-					return
-				}
+				assert.Equal(t, "/bot/sendMessage", r.URL.Path)
 				gotNotify = true
 				resp := tgbotapi.APIResponse{
 					Ok:     true,
 					Result: json.RawMessage("{}"),
 				}
-				if err := json.NewEncoder(w).Encode(resp); err != nil {
-					t.Error(err)
-				}
+				assert.NoError(t, json.NewEncoder(w).Encode(&resp))
 			}))
-			defer server.Close()
+			t.Cleanup(server.Close)
 			integration.Get("telegram").(*integration.Telegram).Bot.SetAPIEndpoint(server.URL + "/bot%s/%s")
 
 			d := &Domain{
@@ -104,12 +93,8 @@ func TestDomain_NotifyThreshold(t *testing.T) {
 				TimeLeft:           tt.fields.TimeLeft,
 				TriggeredThreshold: tt.fields.TriggeredThreshold,
 			}
-			if err := d.NotifyThreshold(); (err != nil) != tt.wantErr {
-				t.Errorf("NotifyThreshold() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if gotNotify != tt.wantNotify {
-				t.Errorf("NotifyThreshold() got notification = %t, want notification %t", gotNotify, tt.wantNotify)
-			}
+			tt.wantErr(t, d.NotifyThreshold())
+			assert.Equal(t, tt.wantNotify, gotNotify)
 		})
 	}
 }
@@ -126,9 +111,9 @@ func TestDomain_NotifyStatusChange(t *testing.T) {
 		name       string
 		fields     fields
 		wantNotify bool
-		wantErr    bool
+		wantErr    require.ErrorAssertionFunc
 	}{
-		{"example.com no change", fields{Name: "example.com"}, false, false},
+		{"example.com no change", fields{Name: "example.com"}, false, require.NoError},
 		{"example.com created status", fields{
 			Name: "example.com",
 			PrevWhois: &whoisparser.WhoisInfo{
@@ -137,7 +122,7 @@ func TestDomain_NotifyStatusChange(t *testing.T) {
 			CurrWhois: whoisparser.WhoisInfo{
 				Domain: &whoisparser.Domain{Status: []string{"a"}},
 			},
-		}, true, false},
+		}, true, require.NoError},
 		{"example.com removed status", fields{
 			Name: "example.com",
 			PrevWhois: &whoisparser.WhoisInfo{
@@ -146,7 +131,7 @@ func TestDomain_NotifyStatusChange(t *testing.T) {
 			CurrWhois: whoisparser.WhoisInfo{
 				Domain: &whoisparser.Domain{Status: []string{}},
 			},
-		}, true, false},
+		}, true, require.NoError},
 		{"example.com changed status", fields{
 			Name: "example.com",
 			PrevWhois: &whoisparser.WhoisInfo{
@@ -155,30 +140,22 @@ func TestDomain_NotifyStatusChange(t *testing.T) {
 			CurrWhois: whoisparser.WhoisInfo{
 				Domain: &whoisparser.Domain{Status: []string{"b"}},
 			},
-		}, true, false},
+		}, true, require.NoError},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := integration.TelegramTestSetup(); err != nil {
-				t.Error(err)
-				return
-			}
+			integration.TelegramTestSetup(t)
 			gotNotify := false
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				if r.URL.Path != "/bot/sendMessage" {
-					t.Errorf("Expected to request /bot/sendMessage, got: %s", r.URL.Path)
-					return
-				}
+				assert.Equal(t, "/bot/sendMessage", r.URL.Path)
 				gotNotify = true
 				resp := tgbotapi.APIResponse{
 					Ok:     true,
 					Result: json.RawMessage("{}"),
 				}
-				if err := json.NewEncoder(w).Encode(resp); err != nil {
-					t.Error(err)
-				}
+				assert.NoError(t, json.NewEncoder(w).Encode(resp))
 			}))
-			defer server.Close()
+			t.Cleanup(server.Close)
 			integration.Get("telegram").(*integration.Telegram).Bot.SetAPIEndpoint(server.URL + "/bot%s/%s")
 
 			d := &Domain{
@@ -188,12 +165,8 @@ func TestDomain_NotifyStatusChange(t *testing.T) {
 				TimeLeft:           tt.fields.TimeLeft,
 				TriggeredThreshold: tt.fields.TriggeredThreshold,
 			}
-			if err := d.NotifyStatusChange(); (err != nil) != tt.wantErr {
-				t.Errorf("NotifyStatusChange() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if gotNotify != tt.wantNotify {
-				t.Errorf("NotifyStatusChange() got notification = %t, want notification %t", gotNotify, tt.wantNotify)
-			}
+			tt.wantErr(t, d.NotifyStatusChange())
+			assert.Equal(t, tt.wantNotify, gotNotify)
 		})
 	}
 }

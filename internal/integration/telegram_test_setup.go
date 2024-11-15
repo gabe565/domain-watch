@@ -5,11 +5,14 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"testing"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-func TelegramTestSetup() (err error) {
+func TelegramTestSetup(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/bot/getMe" {
 			var buf bytes.Buffer
@@ -19,22 +22,19 @@ func TelegramTestSetup() (err error) {
 				UserName:      "Bot",
 				CanJoinGroups: true,
 			}
-			if err := json.NewEncoder(&buf).Encode(u); err != nil {
-				panic(err)
-			}
+			assert.NoError(t, json.NewEncoder(&buf).Encode(u))
 
 			resp := tgbotapi.APIResponse{
 				Ok:     true,
 				Result: json.RawMessage(buf.Bytes()),
 			}
-			if err := json.NewEncoder(w).Encode(resp); err != nil {
-				panic(err)
-			}
+			assert.NoError(t, json.NewEncoder(w).Encode(resp))
 		}
 	}))
-	defer server.Close()
+	t.Cleanup(server.Close)
 
 	telegram := Get("telegram").(*Telegram)
+	var err error
 	telegram.Bot, err = tgbotapi.NewBotAPIWithAPIEndpoint("", server.URL+"/bot%s/%s")
-	return err
+	require.NoError(t, err)
 }

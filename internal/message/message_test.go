@@ -1,10 +1,10 @@
 package message
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/r3labs/diff/v3"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewStatusChangedMessage(t *testing.T) {
@@ -50,9 +50,7 @@ func TestNewStatusChangedMessage(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if gotMsg := NewStatusChangedMessage(tt.args.domain, tt.args.changes); !reflect.DeepEqual(gotMsg, tt.want) {
-				t.Errorf("NewStatusChangedMessage() = %v, want %v", gotMsg, tt.want)
-			}
+			assert.Equal(t, tt.want, NewStatusChangedMessage(tt.args.domain, tt.args.changes))
 		})
 	}
 }
@@ -80,9 +78,7 @@ func TestNewThresholdMessage(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if gotMsg := NewThresholdMessage(tt.args.domain, tt.args.timeLeft); !reflect.DeepEqual(gotMsg, tt.want) {
-				t.Errorf("NewThresholdMessage() = %v, want %v", gotMsg, tt.want)
-			}
+			assert.Equal(t, tt.want, NewThresholdMessage(tt.args.domain, tt.args.timeLeft))
 		})
 	}
 }
