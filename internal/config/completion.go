@@ -10,19 +10,19 @@ import (
 
 func RegisterCompletions(cmd *cobra.Command) {
 	if err := errors.Join(
-		cmd.RegisterFlagCompletionFunc(CompletionFlag, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		cmd.RegisterFlagCompletionFunc(FlagCompletion, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return []string{"bash", "zsh", "fish", "powershell"}, cobra.ShellCompDirectiveNoFileComp
 		}),
 
-		cmd.RegisterFlagCompletionFunc(DomainsFlag, cobra.NoFileCompletions),
-		cmd.RegisterFlagCompletionFunc(EveryFlag, cobra.NoFileCompletions),
-		cmd.RegisterFlagCompletionFunc(SleepFlag, cobra.NoFileCompletions),
-		cmd.RegisterFlagCompletionFunc(ThresholdFlag, cobra.NoFileCompletions),
+		cmd.RegisterFlagCompletionFunc(FlagDomains, cobra.NoFileCompletions),
+		cmd.RegisterFlagCompletionFunc(FlagEvery, cobra.NoFileCompletions),
+		cmd.RegisterFlagCompletionFunc(FlagSleep, cobra.NoFileCompletions),
+		cmd.RegisterFlagCompletionFunc(FlagThreshold, cobra.NoFileCompletions),
 
-		cmd.RegisterFlagCompletionFunc(MetricsEnabledFlag, cobra.NoFileCompletions),
-		cmd.RegisterFlagCompletionFunc(MetricsAddressFlag, cobra.NoFileCompletions),
+		cmd.RegisterFlagCompletionFunc(FlagMetricsEnabled, cobra.NoFileCompletions),
+		cmd.RegisterFlagCompletionFunc(FlagMetricsAddress, cobra.NoFileCompletions),
 
-		cmd.RegisterFlagCompletionFunc(LogLevelFlag,
+		cmd.RegisterFlagCompletionFunc(FlagLogLevel,
 			func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 				return []string{
 					strings.ToLower(slog.LevelDebug.String()),
@@ -31,16 +31,16 @@ func RegisterCompletions(cmd *cobra.Command) {
 					strings.ToLower(slog.LevelError.String()),
 				}, cobra.ShellCompDirectiveNoFileComp
 			}),
-		cmd.RegisterFlagCompletionFunc(LogFormatFlag,
+		cmd.RegisterFlagCompletionFunc(FlagLogFormat,
 			func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 				return []string{"text", "json"}, cobra.ShellCompDirectiveNoFileComp
 			}),
 
-		cmd.RegisterFlagCompletionFunc(TelegramTokenFlag, cobra.NoFileCompletions),
-		cmd.RegisterFlagCompletionFunc(TelegramChatFlag, cobra.NoFileCompletions),
+		cmd.RegisterFlagCompletionFunc(FlagTelegramToken, cobra.NoFileCompletions),
+		cmd.RegisterFlagCompletionFunc(FlagTelegramChat, cobra.NoFileCompletions),
 
-		cmd.RegisterFlagCompletionFunc(GotifyURLFlag, cobra.NoFileCompletions),
-		cmd.RegisterFlagCompletionFunc(GotifyTokenFlag, cobra.NoFileCompletions),
+		cmd.RegisterFlagCompletionFunc(FlagGotifyURL, cobra.NoFileCompletions),
+		cmd.RegisterFlagCompletionFunc(FlagGotifyToken, cobra.NoFileCompletions),
 	); err != nil {
 		panic(err)
 	}
