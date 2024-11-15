@@ -2,6 +2,7 @@ package domain
 
 import (
 	"fmt"
+	"log/slog"
 	"time"
 
 	"gabe565.com/domain-watch/internal/config"
@@ -11,7 +12,6 @@ import (
 	"github.com/likexian/whois"
 	whoisparser "github.com/likexian/whois-parser"
 	"github.com/r3labs/diff/v3"
-	log "github.com/sirupsen/logrus"
 )
 
 func New(conf *config.Config, name string) Domain {
@@ -38,8 +38,8 @@ func (d Domain) Whois() (whoisparser.WhoisInfo, error) {
 	return whoisparser.Parse(raw)
 }
 
-func (d Domain) Log() *log.Entry {
-	return log.WithField("domain", d.Name)
+func (d Domain) Log() *slog.Logger {
+	return slog.With("domain", d.Name)
 }
 
 func (d *Domain) Run() (err error) {
@@ -57,16 +57,13 @@ func (d *Domain) Run() (err error) {
 		d.ExpiresAt, err = dateparse.ParseStrict(d.CurrWhois.Domain.ExpirationDate)
 		if err != nil {
 			d.TimeLeft = 0
-			l.WithError(err).Warn("failed to parse expiration date")
+			l.Warn("Failed to parse expiration date", "error", err)
 		} else {
 			d.TimeLeft = time.Until(d.ExpiresAt).Truncate(24 * time.Hour)
-			l.WithFields(log.Fields{
-				"expires":   d.ExpiresAt,
-				"days_left": d.TimeLeft.Hours() / 24.0,
-			}).Info("fetched whois")
+			l.Info("Fetched whois", "expires", d.ExpiresAt, "days_left", d.TimeLeft.Hours()/24.0)
 		}
 	} else {
-		l.Info("domain does not have an expiration date")
+		l.Info("Domain does not have an expiration date")
 	}
 
 	if err := d.CheckNotifications(); err != nil {

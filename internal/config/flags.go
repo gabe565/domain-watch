@@ -1,6 +1,8 @@
 package config
 
 import (
+	"strings"
+
 	"github.com/spf13/cobra"
 )
 
@@ -34,8 +36,8 @@ func (c *Config) RegisterFlags(cmd *cobra.Command) {
 	fs.DurationVarP(&c.Sleep, SleepFlag, "s", c.Sleep, "sleep time between queries to avoid rate limits")
 	fs.IntSliceVarP(&c.Threshold, ThresholdFlag, "t", c.Threshold, "configure expiration notifications")
 
-	fs.StringVarP(&c.LogLevel, LogLevelFlag, "l", c.LogLevel, "log level (trace, debug, info, warning, error, fatal, panic)")
-	fs.StringVar(&c.LogFormat, LogFormatFlag, c.LogFormat, "log formatter (text, json)")
+	fs.StringVarP(&c.logLevel, LogLevelFlag, "l", c.logLevel, "log level (one of debug, info, warn, error)")
+	fs.StringVar(&c.logFormat, LogFormatFlag, c.logFormat, "log formatter (one of "+strings.Join(LogFormatStrings(), ", ")+")")
 
 	fs.BoolVar(&c.MetricsEnabled, MetricsEnabledFlag, c.MetricsEnabled, "Enables Prometheus metrics API")
 	fs.StringVar(&c.MetricsAddress, MetricsAddressFlag, c.MetricsAddress, "Prometheus metrics API listen address")

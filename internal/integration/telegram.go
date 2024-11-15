@@ -2,11 +2,11 @@ package integration
 
 import (
 	"fmt"
+	"log/slog"
 
 	"gabe565.com/domain-watch/internal/config"
 	"gabe565.com/domain-watch/internal/util"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	log "github.com/sirupsen/logrus"
 )
 
 type Telegram struct {
@@ -32,9 +32,7 @@ func (t *Telegram) Login(token string) (err error) {
 		return err
 	}
 
-	log.WithFields(log.Fields{
-		"username": t.Bot.Self.UserName,
-	}).Info("connected to Telegram")
+	slog.Info("Connected to Telegram", "username", t.Bot.Self.UserName)
 	return nil
 }
 

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"testing"
 	"time"
 
@@ -12,39 +11,7 @@ import (
 	"gabe565.com/domain-watch/internal/integration"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	whoisparser "github.com/likexian/whois-parser"
-	log "github.com/sirupsen/logrus"
 )
-
-func TestDomain_Log(t *testing.T) {
-	type fields struct {
-		Name               string
-		CurrWhois          whoisparser.WhoisInfo
-		PrevWhois          *whoisparser.WhoisInfo
-		TimeLeft           time.Duration
-		TriggeredThreshold int
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   *log.Entry
-	}{
-		{"example.com", fields{Name: "example.com"}, log.WithField("domain", "example.com")},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			d := Domain{
-				Name:               tt.fields.Name,
-				CurrWhois:          tt.fields.CurrWhois,
-				PrevWhois:          tt.fields.PrevWhois,
-				TimeLeft:           tt.fields.TimeLeft,
-				TriggeredThreshold: tt.fields.TriggeredThreshold,
-			}
-			if got := d.Log(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Log() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
 
 func TestDomain_Whois(t *testing.T) {
 	type fields struct {

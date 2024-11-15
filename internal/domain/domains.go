@@ -54,7 +54,7 @@ func (d Domains) Tick() {
 			successMetric.With(prometheus.Labels{"domain": domain.Name}).Set(1)
 		} else {
 			successMetric.With(prometheus.Labels{"domain": domain.Name}).Set(0)
-			domain.Log().WithError(err).Error("domain update failed")
+			domain.Log().Error("Domain update failed", "error", err)
 		}
 		if domain.ExpiresAt.Unix() > 0 {
 			expirationMetric.With(prometheus.Labels{"domain": domain.Name}).Set(float64(domain.ExpiresAt.Unix()))

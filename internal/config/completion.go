@@ -2,8 +2,9 @@ package config
 
 import (
 	"errors"
+	"log/slog"
+	"strings"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -24,13 +25,10 @@ func RegisterCompletions(cmd *cobra.Command) {
 		cmd.RegisterFlagCompletionFunc(LogLevelFlag,
 			func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 				return []string{
-					log.TraceLevel.String(),
-					log.DebugLevel.String(),
-					log.InfoLevel.String(),
-					log.WarnLevel.String(),
-					log.ErrorLevel.String(),
-					log.FatalLevel.String(),
-					log.PanicLevel.String(),
+					strings.ToLower(slog.LevelDebug.String()),
+					strings.ToLower(slog.LevelInfo.String()),
+					strings.ToLower(slog.LevelWarn.String()),
+					strings.ToLower(slog.LevelError.String()),
 				}, cobra.ShellCompDirectiveNoFileComp
 			}),
 		cmd.RegisterFlagCompletionFunc(LogFormatFlag,

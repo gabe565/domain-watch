@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"log/slog"
 	"time"
 
 	"gabe565.com/domain-watch/internal/config"
@@ -9,7 +10,6 @@ import (
 	"gabe565.com/domain-watch/internal/integration"
 	"gabe565.com/domain-watch/internal/metrics"
 	"gabe565.com/utils/cobrax"
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -49,7 +49,7 @@ func run(cmd *cobra.Command, args []string) (err error) {
 	if conf.MetricsEnabled {
 		go func() {
 			if err := metrics.Serve(conf); err != nil {
-				log.Error(err)
+				slog.Error("Failed to serve metrics", "error", err)
 			}
 		}()
 	}
@@ -65,7 +65,7 @@ func run(cmd *cobra.Command, args []string) (err error) {
 	domains.Tick()
 
 	if conf.Every != 0 {
-		log.Info("running as cron")
+		slog.Info("Running as cron")
 
 		ticker := time.NewTicker(conf.Every)
 		for range ticker.C {

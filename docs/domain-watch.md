@@ -15,8 +15,8 @@ domain-watch [flags] domain...
       --gotify-token string      Gotify app token
       --gotify-url string        Gotify URL (include https:// and port if non-standard)
   -h, --help                     help for domain-watch
-      --log-format string        log formatter (text, json) (default "text")
-  -l, --log-level string         log level (trace, debug, info, warning, error, fatal, panic) (default "info")
+      --log-format string        log formatter (one of auto, color, plain, json) (default "auto")
+  -l, --log-level string         log level (one of debug, info, warn, error) (default "info")
       --metrics-address string   Prometheus metrics API listen address (default ":9090")
       --metrics-enabled          Enables Prometheus metrics API
   -s, --sleep duration           sleep time between queries to avoid rate limits (default 3s)

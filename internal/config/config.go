@@ -1,6 +1,10 @@
 package config
 
-import "time"
+import (
+	"log/slog"
+	"strings"
+	"time"
+)
 
 type Config struct {
 	Completion string
@@ -10,8 +14,8 @@ type Config struct {
 	Sleep     time.Duration
 	Threshold []int
 
-	LogLevel  string
-	LogFormat string
+	logLevel  string
+	logFormat string
 
 	TelegramChat  int64
 	TelegramToken string
@@ -28,8 +32,8 @@ func New() *Config {
 		Sleep:     3 * time.Second,
 		Threshold: []int{1, 7},
 
-		LogLevel:  "info",
-		LogFormat: "text",
+		logLevel:  strings.ToLower(slog.LevelInfo.String()),
+		logFormat: FormatAuto.String(),
 
 		MetricsAddress: ":9090",
 	}

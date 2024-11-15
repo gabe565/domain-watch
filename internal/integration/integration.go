@@ -2,10 +2,10 @@ package integration
 
 import (
 	"errors"
+	"log/slog"
 
 	"gabe565.com/domain-watch/internal/config"
 	"gabe565.com/domain-watch/internal/util"
-	log "github.com/sirupsen/logrus"
 )
 
 type Integration interface {
@@ -33,7 +33,7 @@ func Setup(conf *config.Config) error {
 	}
 
 	if configured == 0 {
-		log.Warn("no integrations were configured")
+		slog.Warn("No integrations were configured")
 	}
 
 	return nil
@@ -42,7 +42,7 @@ func Setup(conf *config.Config) error {
 func Send(message string) {
 	for name, integration := range Default {
 		if err := integration.Send(message); err != nil {
-			log.WithField("integration", name).Error(err)
+			slog.Error("Failed to send message", "integration", name, "error", err)
 		}
 	}
 }

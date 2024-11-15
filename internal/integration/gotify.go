@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 
 	"gabe565.com/domain-watch/internal/config"
 	"gabe565.com/domain-watch/internal/util"
 	"github.com/gotify/server/v2/model"
-	log "github.com/sirupsen/logrus"
 )
 
 type Gotify struct {
@@ -59,10 +59,7 @@ func (g *Gotify) Login() error {
 		return err
 	}
 
-	log.WithFields(log.Fields{
-		"version": version.Version,
-	}).Info("connected to Gotify")
-
+	slog.Info("Connected to Gotify", "version", version.Version)
 	return nil
 }
 

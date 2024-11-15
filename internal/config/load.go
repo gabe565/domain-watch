@@ -30,7 +30,7 @@ func (c *Config) Load(cmd *cobra.Command, args []string) error {
 			}
 		}
 	})
-	InitLog(c)
+	c.InitLog(cmd.ErrOrStderr())
 
 	c.Domains = append(c.Domains, args...)
 	if len(c.Domains) == 0 && c.Completion == "" {
