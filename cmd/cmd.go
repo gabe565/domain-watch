@@ -40,6 +40,8 @@ func run(cmd *cobra.Command, args []string) (err error) {
 		return completion(cmd, conf.Completion)
 	}
 
+	slog.Info("Domain Watch", "version", cobrax.GetVersion(cmd), "commit", cobrax.GetCommit(cmd))
+
 	if err := integration.Setup(conf); err != nil {
 		return err
 	}
