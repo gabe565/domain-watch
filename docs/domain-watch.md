@@ -23,5 +23,6 @@ domain-watch [flags] domain...
       --telegram-chat int        Telegram chat ID
       --telegram-token string    Telegram token
   -t, --threshold ints           configure expiration notifications (default [1,7])
+  -v, --version                  version for domain-watch
 ```
 

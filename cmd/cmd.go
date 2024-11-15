@@ -8,11 +8,12 @@ import (
 	"gabe565.com/domain-watch/internal/domain"
 	"gabe565.com/domain-watch/internal/integration"
 	"gabe565.com/domain-watch/internal/metrics"
+	"gabe565.com/utils/cobrax"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
-func NewCommand() *cobra.Command {
+func New(opts ...cobrax.Option) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:               "domain-watch [flags] domain...",
 		DisableAutoGenTag: true,
@@ -23,6 +24,9 @@ func NewCommand() *cobra.Command {
 	cfg.RegisterFlags(cmd)
 	config.RegisterCompletions(cmd)
 	cmd.SetContext(config.NewContext(context.Background(), cfg))
+	for _, opt := range opts {
+		opt(cmd)
+	}
 	return cmd
 }
 
