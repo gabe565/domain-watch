@@ -32,12 +32,12 @@ func (c *Config) RegisterFlags(cmd *cobra.Command) {
 	fs.StringVar(&c.Completion, CompletionFlag, c.Completion, "Output command-line completion code for the specified shell. Can be 'bash', 'zsh', 'fish', or 'powershell'.")
 
 	fs.StringSliceVar(&c.Domains, DomainsFlag, c.Domains, "List of domains to watch")
-	fs.DurationVarP(&c.Every, EveryFlag, "e", c.Every, "enable cron mode and configure update interval")
-	fs.DurationVarP(&c.Sleep, SleepFlag, "s", c.Sleep, "sleep time between queries to avoid rate limits")
-	fs.IntSliceVarP(&c.Threshold, ThresholdFlag, "t", c.Threshold, "configure expiration notifications")
+	fs.DurationVarP(&c.Every, EveryFlag, "e", c.Every, "Enable cron mode and configure update interval")
+	fs.DurationVarP(&c.Sleep, SleepFlag, "s", c.Sleep, "Sleep time between queries to avoid rate limits")
+	fs.IntSliceVarP(&c.Threshold, ThresholdFlag, "t", c.Threshold, "Configure expiration notifications")
 
-	fs.StringVarP(&c.logLevel, LogLevelFlag, "l", c.logLevel, "log level (one of debug, info, warn, error)")
-	fs.StringVar(&c.logFormat, LogFormatFlag, c.logFormat, "log formatter (one of "+strings.Join(LogFormatStrings(), ", ")+")")
+	fs.StringVarP(&c.logLevel, LogLevelFlag, "l", c.logLevel, "Log level (one of debug, info, warn, error)")
+	fs.StringVar(&c.logFormat, LogFormatFlag, c.logFormat, "Log formatter (one of "+strings.Join(LogFormatStrings(), ", ")+")")
 
 	fs.BoolVar(&c.MetricsEnabled, MetricsEnabledFlag, c.MetricsEnabled, "Enables Prometheus metrics API")
 	fs.StringVar(&c.MetricsAddress, MetricsAddressFlag, c.MetricsAddress, "Prometheus metrics API listen address")
