@@ -3,7 +3,7 @@ module gabe565.com/domain-watch
 go 1.23.3
 
 require (
-	gabe565.com/utils v0.0.0-20241114234101-e128cd3269b5
+	gabe565.com/utils v0.0.0-20241116061915-abe2278ecd5c
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/dmarkham/enumer v1.5.10
 	github.com/go-telegram/bot v1.10.1

@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"gabe565.com/domain-watch/cmd"
+	"gabe565.com/utils/cobrax"
 )
 
 func main() {
@@ -23,13 +24,12 @@ func main() {
 	var buf bytes.Buffer
 	rootCmd.SetOut(&buf)
 
-	for _, shell := range []string{"bash", "zsh", "fish"} {
-		rootCmd.SetArgs([]string{"--completion=" + shell})
-		if err := rootCmd.Execute(); err != nil {
+	for _, shell := range []cobrax.Shell{cobrax.Bash, cobrax.Zsh, cobrax.Fish} {
+		if err := cobrax.GenCompletion(rootCmd, shell); err != nil {
 			panic(err)
 		}
 
-		f, err := os.Create(filepath.Join("completions", name+"."+shell))
+		f, err := os.Create(filepath.Join("completions", name+"."+string(shell)))
 		if err != nil {
 			panic(err)
 		}

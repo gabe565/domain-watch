@@ -7,8 +7,6 @@ import (
 )
 
 type Config struct {
-	Completion string
-
 	Domains   []string
 	Every     time.Duration
 	Sleep     time.Duration

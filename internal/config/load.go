@@ -38,7 +38,7 @@ func (c *Config) Load(cmd *cobra.Command, args []string) error {
 	c.InitLog(cmd.ErrOrStderr())
 
 	c.Domains = append(c.Domains, args...)
-	if len(c.Domains) == 0 && c.Completion == "" {
+	if len(c.Domains) == 0 {
 		return ErrNoDomain
 	}
 

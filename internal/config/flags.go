@@ -3,12 +3,12 @@ package config
 import (
 	"strings"
 
+	"gabe565.com/utils/cobrax"
+	"gabe565.com/utils/must"
 	"github.com/spf13/cobra"
 )
 
 const (
-	FlagCompletion = "completion"
-
 	FlagDomains   = "domains"
 	FlagEvery     = "every"
 	FlagSleep     = "sleep"
@@ -29,7 +29,7 @@ const (
 
 func (c *Config) RegisterFlags(cmd *cobra.Command) {
 	fs := cmd.Flags()
-	fs.StringVar(&c.Completion, FlagCompletion, c.Completion, "Output command-line completion code for the specified shell. Can be 'bash', 'zsh', 'fish', or 'powershell'.")
+	must.Must(cobrax.RegisterCompletionFlag(cmd))
 
 	fs.StringSliceVar(&c.Domains, FlagDomains, c.Domains, "List of domains to watch")
 	fs.DurationVarP(&c.Every, FlagEvery, "e", c.Every, "Enable cron mode and configure update interval")

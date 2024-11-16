@@ -9,10 +9,6 @@ import (
 )
 
 func RegisterCompletions(cmd *cobra.Command) {
-	must.Must(cmd.RegisterFlagCompletionFunc(FlagCompletion, func(_ *cobra.Command, _ []string, _ string) ([]string, cobra.ShellCompDirective) {
-		return []string{"bash", "zsh", "fish", "powershell"}, cobra.ShellCompDirectiveNoFileComp
-	}))
-
 	must.Must(cmd.RegisterFlagCompletionFunc(FlagDomains, cobra.NoFileCompletions))
 	must.Must(cmd.RegisterFlagCompletionFunc(FlagEvery, cobra.NoFileCompletions))
 	must.Must(cmd.RegisterFlagCompletionFunc(FlagSleep, cobra.NoFileCompletions))

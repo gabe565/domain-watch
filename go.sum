@@ -1,5 +1,5 @@
-gabe565.com/utils v0.0.0-20241114234101-e128cd3269b5 h1:uqtftvk1FMAsFPAT9ICLLntGsZHmrghgIGBClVCsVHk=
-gabe565.com/utils v0.0.0-20241114234101-e128cd3269b5/go.mod h1:1WioSVukwGZYG4Q0LJBnRhgYyVljmW2Izl+RW36ALUc=
+gabe565.com/utils v0.0.0-20241116061915-abe2278ecd5c h1:1rmGsS/Sbm85ZELLkfOtXJ99v3YHdmqvkhMDLteLUug=
+gabe565.com/utils v0.0.0-20241116061915-abe2278ecd5c/go.mod h1:1WioSVukwGZYG4Q0LJBnRhgYyVljmW2Izl+RW36ALUc=
 github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de h1:FxWPpzIjnTlhPwqqXc4/vE0f7GvRjuAsbW+HOIe8KnA=
 github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de/go.mod h1:DCaWoUhZrYW9p1lxo/cm8EmUOOzAPSEZNGF2DK1dJgw=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
