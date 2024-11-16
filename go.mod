@@ -6,7 +6,7 @@ require (
 	gabe565.com/utils v0.0.0-20241114234101-e128cd3269b5
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/dmarkham/enumer v1.5.10
-	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
+	github.com/go-telegram/bot v1.10.1
 	github.com/gotify/server/v2 v2.6.0
 	github.com/likexian/whois v1.15.5
 	github.com/likexian/whois-parser v1.24.20

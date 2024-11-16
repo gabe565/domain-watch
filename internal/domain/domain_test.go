@@ -10,7 +10,7 @@ import (
 
 	"gabe565.com/domain-watch/internal/config"
 	"gabe565.com/domain-watch/internal/integration"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/go-telegram/bot"
 	whoisparser "github.com/likexian/whois-parser"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -71,19 +71,18 @@ func TestDomain_NotifyThreshold(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			telegram := integration.TelegramTestSetup(t)
 			gotNotify := false
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				assert.Equal(t, "/bot/sendMessage", r.URL.Path)
+				assert.Equal(t, "/bot123/sendMessage", r.URL.Path)
 				gotNotify = true
-				resp := tgbotapi.APIResponse{
-					Ok:     true,
+				resp := integration.APIResponse{
+					OK:     true,
 					Result: json.RawMessage("{}"),
 				}
 				assert.NoError(t, json.NewEncoder(w).Encode(&resp))
 			}))
 			t.Cleanup(server.Close)
-			telegram.Bot.SetAPIEndpoint(server.URL + "/bot%s/%s")
+			telegram := integration.TelegramTestSetup(t, bot.WithServerURL(server.URL))
 
 			d := &Domain{
 				conf: &config.Config{Threshold: []int{1, 7}},
@@ -145,19 +144,18 @@ func TestDomain_NotifyStatusChange(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			telegram := integration.TelegramTestSetup(t)
 			gotNotify := false
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				assert.Equal(t, "/bot/sendMessage", r.URL.Path)
+				assert.Equal(t, "/bot123/sendMessage", r.URL.Path)
 				gotNotify = true
-				resp := tgbotapi.APIResponse{
-					Ok:     true,
+				resp := integration.APIResponse{
+					OK:     true,
 					Result: json.RawMessage("{}"),
 				}
 				assert.NoError(t, json.NewEncoder(w).Encode(resp))
 			}))
 			t.Cleanup(server.Close)
-			telegram.Bot.SetAPIEndpoint(server.URL + "/bot%s/%s")
+			telegram := integration.TelegramTestSetup(t, bot.WithServerURL(server.URL))
 
 			d := &Domain{
 				Name:               tt.fields.Name,
