@@ -15,6 +15,8 @@ type Telegram struct {
 	Bot    *bot.Bot
 }
 
+func (t *Telegram) Name() string { return "Telegram" }
+
 func (t *Telegram) Setup(ctx context.Context, conf *config.Config) error {
 	if t.ChatID = conf.TelegramChat; t.ChatID == 0 {
 		return fmt.Errorf("telegram %w: chat ID", util.ErrNotConfigured)

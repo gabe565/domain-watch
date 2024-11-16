@@ -94,7 +94,7 @@ func TestDomain_NotifyThreshold(t *testing.T) {
 				TimeLeft:           tt.fields.TimeLeft,
 				TriggeredThreshold: tt.fields.TriggeredThreshold,
 			}
-			tt.wantErr(t, d.NotifyThreshold(context.Background(), integration.Integrations{"telegram": tg}))
+			tt.wantErr(t, d.NotifyThreshold(context.Background(), integration.Integrations{tg}))
 			assert.Equal(t, tt.wantNotify, gotNotify)
 		})
 	}
@@ -165,7 +165,7 @@ func TestDomain_NotifyStatusChange(t *testing.T) {
 				TimeLeft:           tt.fields.TimeLeft,
 				TriggeredThreshold: tt.fields.TriggeredThreshold,
 			}
-			tt.wantErr(t, d.NotifyStatusChange(context.Background(), integration.Integrations{"telegram": tg}))
+			tt.wantErr(t, d.NotifyStatusChange(context.Background(), integration.Integrations{tg}))
 			assert.Equal(t, tt.wantNotify, gotNotify)
 		})
 	}

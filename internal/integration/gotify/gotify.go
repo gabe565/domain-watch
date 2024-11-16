@@ -20,6 +20,8 @@ type Gotify struct {
 	token string
 }
 
+func (g *Gotify) Name() string { return "Gotify" }
+
 func (g *Gotify) Setup(ctx context.Context, conf *config.Config) error {
 	if conf.GotifyURL == "" {
 		return fmt.Errorf("gotify %w: token", util.ErrNotConfigured)
