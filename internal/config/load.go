@@ -26,6 +26,9 @@ func (c *Config) Load(cmd *cobra.Command, args []string) error {
 	cmd.Flags().VisitAll(func(f *pflag.Flag) {
 		if !f.Changed {
 			if val, ok := os.LookupEnv(EnvName(f.Name)); ok {
+				if f.Name == FlagDomains {
+					val = strings.ReplaceAll(val, " ", ",")
+				}
 				if err := f.Value.Set(val); err != nil {
 					errs = append(errs, err)
 				}
