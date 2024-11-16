@@ -1,6 +1,7 @@
 package integration
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 
@@ -10,23 +11,24 @@ import (
 )
 
 type Telegram struct {
-	ChatId int64
+	ChatID int64
 	Bot    *tgbotapi.BotAPI
 }
 
-func (t *Telegram) Setup(conf *config.Config) error {
-	if t.ChatId = conf.TelegramChat; t.ChatId == 0 {
+func (t *Telegram) Setup(_ context.Context, conf *config.Config) error {
+	if t.ChatID = conf.TelegramChat; t.ChatID == 0 {
 		return fmt.Errorf("telegram %w: chat ID", util.ErrNotConfigured)
 	}
 
 	return t.Login(conf.TelegramToken)
 }
 
-func (t *Telegram) Login(token string) (err error) {
+func (t *Telegram) Login(token string) error {
 	if token == "" {
 		return fmt.Errorf("telegram %w: token", util.ErrNotConfigured)
 	}
 
+	var err error
 	t.Bot, err = tgbotapi.NewBotAPI(token)
 	if err != nil {
 		return err
@@ -36,12 +38,12 @@ func (t *Telegram) Login(token string) (err error) {
 	return nil
 }
 
-func (t *Telegram) Send(message string) error {
+func (t *Telegram) Send(_ context.Context, message string) error {
 	if t.Bot == nil {
 		return nil
 	}
 
-	payload := tgbotapi.NewMessage(t.ChatId, message)
+	payload := tgbotapi.NewMessage(t.ChatID, message)
 	payload.ParseMode = tgbotapi.ModeMarkdown
 
 	_, err := t.Bot.Send(payload)

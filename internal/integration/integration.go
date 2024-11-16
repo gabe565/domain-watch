@@ -1,6 +1,7 @@
 package integration
 
 import (
+	"context"
 	"errors"
 	"log/slog"
 
@@ -9,44 +10,46 @@ import (
 )
 
 type Integration interface {
-	Setup(*config.Config) error
-	Send(string) error
+	Setup(ctx context.Context, conf *config.Config) error
+	Send(ctx context.Context, text string) error
 }
 
-var Default = map[string]Integration{
-	"telegram": &Telegram{},
-	"gotify":   &Gotify{},
+type Integrations map[string]Integration
+
+func Default() Integrations {
+	return map[string]Integration{
+		"telegram": &Telegram{},
+		"gotify":   &Gotify{},
+	}
 }
 
-func Setup(conf *config.Config) error {
+func Setup(ctx context.Context, conf *config.Config) (Integrations, error) {
 	var configured uint8
 
-	for _, integration := range Default {
-		err := integration.Setup(conf)
+	integrations := Default()
+
+	for _, integration := range integrations {
+		err := integration.Setup(ctx, conf)
 		if err != nil {
 			if errors.Is(err, util.ErrNotConfigured) {
 				continue
 			}
-			return err
+			return nil, err
 		}
-		configured += 1
+		configured++
 	}
 
 	if configured == 0 {
 		slog.Warn("No integrations were configured")
 	}
 
-	return nil
+	return integrations, nil
 }
 
-func Send(message string) {
-	for name, integration := range Default {
-		if err := integration.Send(message); err != nil {
+func (i Integrations) Send(ctx context.Context, message string) {
+	for name, integration := range i {
+		if err := integration.Send(ctx, message); err != nil {
 			slog.Error("Failed to send message", "integration", name, "error", err)
 		}
 	}
-}
-
-func Get(key string) Integration {
-	return Default[key]
 }

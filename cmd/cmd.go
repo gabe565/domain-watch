@@ -30,7 +30,7 @@ func New(opts ...cobrax.Option) *cobra.Command {
 	return cmd
 }
 
-func run(cmd *cobra.Command, args []string) (err error) {
+func run(cmd *cobra.Command, args []string) error {
 	conf, err := config.Load(cmd, args)
 	if err != nil {
 		return err
@@ -42,7 +42,8 @@ func run(cmd *cobra.Command, args []string) (err error) {
 
 	slog.Info("Domain Watch", "version", cobrax.GetVersion(cmd), "commit", cobrax.GetCommit(cmd))
 
-	if err := integration.Setup(conf); err != nil {
+	integrations, err := integration.Setup(cmd.Context(), conf)
+	if err != nil {
 		return err
 	}
 
@@ -64,14 +65,14 @@ func run(cmd *cobra.Command, args []string) (err error) {
 		domains.Add(domain.New(conf, domainName))
 	}
 
-	domains.Tick()
+	domains.Tick(cmd.Context(), integrations)
 
 	if conf.Every != 0 {
 		slog.Info("Running as cron")
 
 		ticker := time.NewTicker(conf.Every)
 		for range ticker.C {
-			domains.Tick()
+			domains.Tick(cmd.Context(), integrations)
 		}
 	}
 

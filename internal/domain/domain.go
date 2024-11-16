@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"time"
@@ -42,7 +43,8 @@ func (d Domain) Log() *slog.Logger {
 	return slog.With("domain", d.Name)
 }
 
-func (d *Domain) Run() (err error) {
+func (d *Domain) Run(ctx context.Context, integrations integration.Integrations) error {
+	var err error
 	d.CurrWhois, err = d.Whois()
 	if err != nil {
 		return fmt.Errorf("failed to fetch whois: %w", err)
@@ -66,20 +68,20 @@ func (d *Domain) Run() (err error) {
 		l.Info("Domain does not have an expiration date")
 	}
 
-	if err := d.CheckNotifications(); err != nil {
+	if err := d.CheckNotifications(ctx, integrations); err != nil {
 		return fmt.Errorf("failed to send message: %w", err)
 	}
 
 	return nil
 }
 
-func (d *Domain) NotifyThreshold() error {
+func (d *Domain) NotifyThreshold(ctx context.Context, integrations integration.Integrations) error {
 	if d.TimeLeft != 0 {
 		daysLeft := int(d.TimeLeft.Hours() / 24)
 		for _, threshold := range d.conf.Threshold {
 			if d.TriggeredThreshold != threshold && daysLeft <= threshold {
 				msg := message.NewThresholdMessage(d.Name, daysLeft)
-				integration.Send(msg)
+				integrations.Send(ctx, msg)
 				d.TriggeredThreshold = threshold
 				break
 			}
@@ -88,7 +90,7 @@ func (d *Domain) NotifyThreshold() error {
 	return nil
 }
 
-func (d *Domain) NotifyStatusChange() error {
+func (d *Domain) NotifyStatusChange(ctx context.Context, integrations integration.Integrations) error {
 	if d.PrevWhois != nil {
 		changes, err := diff.Diff(d.PrevWhois.Domain.Status, d.CurrWhois.Domain.Status)
 		if err != nil {
@@ -97,17 +99,17 @@ func (d *Domain) NotifyStatusChange() error {
 
 		if len(changes) > 0 {
 			msg := message.NewStatusChangedMessage(d.Name, changes)
-			integration.Send(msg)
+			integrations.Send(ctx, msg)
 		}
 	}
 	return nil
 }
 
-func (d *Domain) CheckNotifications() error {
-	if err := d.NotifyThreshold(); err != nil {
+func (d *Domain) CheckNotifications(ctx context.Context, i integration.Integrations) error {
+	if err := d.NotifyThreshold(ctx, i); err != nil {
 		return err
 	}
-	if err := d.NotifyStatusChange(); err != nil {
+	if err := d.NotifyStatusChange(ctx, i); err != nil {
 		return err
 	}
 	return nil

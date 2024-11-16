@@ -1,10 +1,13 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/spf13/cobra"
 )
+
+var ErrInvalidShell = errors.New("invalid shell")
 
 func completion(cmd *cobra.Command, shell string) error {
 	switch shell {
@@ -17,6 +20,6 @@ func completion(cmd *cobra.Command, shell string) error {
 	case "powershell":
 		return cmd.Root().GenPowerShellCompletionWithDesc(cmd.OutOrStdout())
 	default:
-		return fmt.Errorf("%v: invalid shell", shell)
+		return fmt.Errorf("%w: %s", ErrInvalidShell, shell)
 	}
 }

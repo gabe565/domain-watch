@@ -10,7 +10,7 @@ import (
 
 func RegisterCompletions(cmd *cobra.Command) {
 	if err := errors.Join(
-		cmd.RegisterFlagCompletionFunc(FlagCompletion, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		cmd.RegisterFlagCompletionFunc(FlagCompletion, func(_ *cobra.Command, _ []string, _ string) ([]string, cobra.ShellCompDirective) {
 			return []string{"bash", "zsh", "fish", "powershell"}, cobra.ShellCompDirectiveNoFileComp
 		}),
 
@@ -23,7 +23,7 @@ func RegisterCompletions(cmd *cobra.Command) {
 		cmd.RegisterFlagCompletionFunc(FlagMetricsAddress, cobra.NoFileCompletions),
 
 		cmd.RegisterFlagCompletionFunc(FlagLogLevel,
-			func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			func(_ *cobra.Command, _ []string, _ string) ([]string, cobra.ShellCompDirective) {
 				return []string{
 					strings.ToLower(slog.LevelDebug.String()),
 					strings.ToLower(slog.LevelInfo.String()),
@@ -32,7 +32,7 @@ func RegisterCompletions(cmd *cobra.Command) {
 				}, cobra.ShellCompDirectiveNoFileComp
 			}),
 		cmd.RegisterFlagCompletionFunc(FlagLogFormat,
-			func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			func(_ *cobra.Command, _ []string, _ string) ([]string, cobra.ShellCompDirective) {
 				return []string{"text", "json"}, cobra.ShellCompDirectiveNoFileComp
 			}),
 

@@ -2,6 +2,7 @@ package integration
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -19,11 +20,12 @@ type Gotify struct {
 	token string
 }
 
-func (g *Gotify) Setup(conf *config.Config) (err error) {
+func (g *Gotify) Setup(ctx context.Context, conf *config.Config) error {
 	if conf.GotifyURL == "" {
 		return fmt.Errorf("gotify %w: token", util.ErrNotConfigured)
 	}
 
+	var err error
 	g.URL, err = url.Parse(conf.GotifyURL)
 	if err != nil {
 		return err
@@ -32,16 +34,21 @@ func (g *Gotify) Setup(conf *config.Config) (err error) {
 	if g.token = conf.GotifyToken; g.token == "" {
 		return fmt.Errorf("gotify %w: chat ID", util.ErrNotConfigured)
 	}
-	return g.Login()
+	return g.Login(ctx)
 }
 
-func (g *Gotify) Login() error {
+func (g *Gotify) Login(ctx context.Context) error {
 	u, err := g.URL.Parse("version")
 	if err != nil {
 		return err
 	}
 
-	resp, err := http.Get(u.String())
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
+	if err != nil {
+		return err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}
@@ -63,7 +70,7 @@ func (g *Gotify) Login() error {
 	return nil
 }
 
-func (g *Gotify) Send(text string) error {
+func (g *Gotify) Send(ctx context.Context, text string) error {
 	if g.URL == nil {
 		return nil
 	}
@@ -89,7 +96,7 @@ func (g *Gotify) Send(text string) error {
 		return err
 	}
 
-	req, err := http.NewRequest(http.MethodPost, u.String(), bytes.NewReader(body))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, u.String(), bytes.NewReader(body))
 	if err != nil {
 		return err
 	}

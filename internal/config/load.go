@@ -19,6 +19,8 @@ func Load(cmd *cobra.Command, args []string) (*Config, error) {
 	return conf, conf.Load(cmd, args)
 }
 
+var ErrNoDomain = errors.New("no domain was configured")
+
 func (c *Config) Load(cmd *cobra.Command, args []string) error {
 	var errs []error
 	cmd.Flags().VisitAll(func(f *pflag.Flag) {
@@ -34,7 +36,7 @@ func (c *Config) Load(cmd *cobra.Command, args []string) error {
 
 	c.Domains = append(c.Domains, args...)
 	if len(c.Domains) == 0 && c.Completion == "" {
-		return errors.New("missing domain")
+		return ErrNoDomain
 	}
 
 	return errors.Join(errs...)

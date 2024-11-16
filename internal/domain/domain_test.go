@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -70,7 +71,7 @@ func TestDomain_NotifyThreshold(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			integration.TelegramTestSetup(t)
+			telegram := integration.TelegramTestSetup(t)
 			gotNotify := false
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				assert.Equal(t, "/bot/sendMessage", r.URL.Path)
@@ -82,7 +83,7 @@ func TestDomain_NotifyThreshold(t *testing.T) {
 				assert.NoError(t, json.NewEncoder(w).Encode(&resp))
 			}))
 			t.Cleanup(server.Close)
-			integration.Get("telegram").(*integration.Telegram).Bot.SetAPIEndpoint(server.URL + "/bot%s/%s")
+			telegram.Bot.SetAPIEndpoint(server.URL + "/bot%s/%s")
 
 			d := &Domain{
 				conf: &config.Config{Threshold: []int{1, 7}},
@@ -93,7 +94,7 @@ func TestDomain_NotifyThreshold(t *testing.T) {
 				TimeLeft:           tt.fields.TimeLeft,
 				TriggeredThreshold: tt.fields.TriggeredThreshold,
 			}
-			tt.wantErr(t, d.NotifyThreshold())
+			tt.wantErr(t, d.NotifyThreshold(context.Background(), integration.Integrations{"telegram": telegram}))
 			assert.Equal(t, tt.wantNotify, gotNotify)
 		})
 	}
@@ -144,7 +145,7 @@ func TestDomain_NotifyStatusChange(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			integration.TelegramTestSetup(t)
+			telegram := integration.TelegramTestSetup(t)
 			gotNotify := false
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				assert.Equal(t, "/bot/sendMessage", r.URL.Path)
@@ -156,7 +157,7 @@ func TestDomain_NotifyStatusChange(t *testing.T) {
 				assert.NoError(t, json.NewEncoder(w).Encode(resp))
 			}))
 			t.Cleanup(server.Close)
-			integration.Get("telegram").(*integration.Telegram).Bot.SetAPIEndpoint(server.URL + "/bot%s/%s")
+			telegram.Bot.SetAPIEndpoint(server.URL + "/bot%s/%s")
 
 			d := &Domain{
 				Name:               tt.fields.Name,
@@ -165,7 +166,7 @@ func TestDomain_NotifyStatusChange(t *testing.T) {
 				TimeLeft:           tt.fields.TimeLeft,
 				TriggeredThreshold: tt.fields.TriggeredThreshold,
 			}
-			tt.wantErr(t, d.NotifyStatusChange())
+			tt.wantErr(t, d.NotifyStatusChange(context.Background(), integration.Integrations{"telegram": telegram}))
 			assert.Equal(t, tt.wantNotify, gotNotify)
 		})
 	}

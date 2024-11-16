@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TelegramTestSetup(t *testing.T) {
+func TelegramTestSetup(t *testing.T) *Telegram {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/bot/getMe" {
 			var buf bytes.Buffer
@@ -33,8 +33,9 @@ func TelegramTestSetup(t *testing.T) {
 	}))
 	t.Cleanup(server.Close)
 
-	telegram := Get("telegram").(*Telegram)
+	telegram := &Telegram{}
 	var err error
 	telegram.Bot, err = tgbotapi.NewBotAPIWithAPIEndpoint("", server.URL+"/bot%s/%s")
 	require.NoError(t, err)
+	return telegram
 }
