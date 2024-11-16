@@ -72,7 +72,9 @@ func run(cmd *cobra.Command, args []string) error {
 
 		ticker := time.NewTicker(conf.Every)
 		for range ticker.C {
-			domains.Tick(cmd.Context(), integrations)
+			ctx, cancel := context.WithTimeout(cmd.Context(), conf.Every)
+			domains.Tick(ctx, integrations)
+			cancel()
 		}
 	}
 
