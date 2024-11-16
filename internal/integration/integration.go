@@ -6,6 +6,8 @@ import (
 	"log/slog"
 
 	"gabe565.com/domain-watch/internal/config"
+	"gabe565.com/domain-watch/internal/integration/gotify"
+	"gabe565.com/domain-watch/internal/integration/telegram"
 	"gabe565.com/domain-watch/internal/util"
 )
 
@@ -18,8 +20,8 @@ type Integrations map[string]Integration
 
 func Default() Integrations {
 	return map[string]Integration{
-		"telegram": &Telegram{},
-		"gotify":   &Gotify{},
+		"telegram": &telegram.Telegram{},
+		"gotify":   &gotify.Gotify{},
 	}
 }
 

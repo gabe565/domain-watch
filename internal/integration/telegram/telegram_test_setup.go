@@ -1,4 +1,4 @@
-package integration
+package telegram
 
 import (
 	"bytes"
@@ -24,7 +24,7 @@ type APIResponse struct {
 	} `json:"parameters,omitempty"`
 }
 
-func TelegramTestSetup(t *testing.T, opts ...bot.Option) *Telegram {
+func NewTestClient(t *testing.T, opts ...bot.Option) *Telegram {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/bot123/getMe" {
 			var buf bytes.Buffer

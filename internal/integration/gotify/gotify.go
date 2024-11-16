@@ -1,4 +1,4 @@
-package integration
+package gotify
 
 import (
 	"bytes"
