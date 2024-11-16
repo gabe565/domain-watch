@@ -68,7 +68,7 @@ func run(cmd *cobra.Command, args []string) error {
 	domains.Tick(cmd.Context(), integrations)
 
 	if conf.Every != 0 {
-		slog.Info("Running as cron")
+		slog.Info("Running as cron", "interval", conf.Every)
 
 		ticker := time.NewTicker(conf.Every)
 		for range ticker.C {
