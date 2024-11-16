@@ -19,8 +19,8 @@ github.com/go-telegram/bot v1.10.1 h1:zwbEjz6ZlqBsyT5EqNqZDYX1ogHIiln1lwYpcK3E8X
 github.com/go-telegram/bot v1.10.1/go.mod h1:i2TRs7fXWIeaceF3z7KzsMt/he0TwkVC680mvdTFYeM=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/gotify/server/v2 v2.6.0 h1:FhWXgJPlY9sNwMOHCVgiR21Af/8iXIl6Lzb3cWBxfgo=
-github.com/gotify/server/v2 v2.6.0/go.mod h1:Dk8HLyTVDqmXM8YEg6tjROBen6mxyHZFRggJFHTwZLc=
+github.com/gotify/server/v2 v2.6.1 h1:Kf7v5fzBxzELzZa/jonWfwJMkqYqh1LBzBpCmt5QIAI=
+github.com/gotify/server/v2 v2.6.1/go.mod h1:Dk8HLyTVDqmXM8YEg6tjROBen6mxyHZFRggJFHTwZLc=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/klauspost/compress v1.17.9 h1:6KIumPrER1LHsvBVuDa0r5xaG0Es51mhhB9BQB2qeMA=
