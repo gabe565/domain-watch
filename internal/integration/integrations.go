@@ -43,9 +43,16 @@ func Setup(ctx context.Context, conf *config.Config) (Integrations, error) {
 }
 
 func (i Integrations) Send(ctx context.Context, message string) {
+	sent := make([]string, 0, len(i))
 	for _, integration := range i {
 		if err := integration.Send(ctx, message); err != nil {
-			slog.Error("Failed to send message", "integration", integration.Name(), "error", err)
+			slog.Error("Failed to notify", "integration", integration.Name(), "error", err)
+			continue
 		}
+		sent = append(sent, integration.Name())
+	}
+	if len(sent) != 0 {
+		slices.Sort(sent)
+		slog.Info("Sent notification", "integrations", sent)
 	}
 }
