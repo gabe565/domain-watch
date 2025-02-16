@@ -3,8 +3,6 @@ package config
 import (
 	"strings"
 
-	"gabe565.com/utils/cobrax"
-	"gabe565.com/utils/must"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +27,6 @@ const (
 
 func (c *Config) RegisterFlags(cmd *cobra.Command) {
 	fs := cmd.Flags()
-	must.Must(cobrax.RegisterCompletionFlag(cmd))
 
 	fs.StringSliceVar(&c.Domains, FlagDomains, c.Domains, "List of domains to watch")
 	fs.DurationVarP(&c.Every, FlagEvery, "e", c.Every, "Enable cron mode and configure update interval")

@@ -9,7 +9,6 @@ domain-watch [flags] domain...
 ### Options
 
 ```
-      --completion string        Generate the autocompletion script for the specified shell (one of bash, zsh, fish, powershell)
       --domains strings          List of domains to watch
   -e, --every duration           Enable cron mode and configure update interval
       --gotify-token string      Gotify app token
