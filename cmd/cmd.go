@@ -16,6 +16,7 @@ import (
 func New(opts ...cobrax.Option) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:               "domain-watch [flags] domain...",
+		Short:             "Get notified about domain changes as they happen.",
 		DisableAutoGenTag: true,
 		RunE:              run,
 		ValidArgsFunction: cobra.NoFileCompletions,

@@ -1,6 +1,6 @@
 ## domain-watch
 
-
+Get notified about domain changes as they happen.
 
 ```
 domain-watch [flags] domain...
