@@ -49,8 +49,11 @@ changelog:
     - title: Fixes
       order: 1
       regexp: "(fix|perf)"
-    - title: Others
+    - title: Dependencies
       order: 999
+      regexp: "\\(deps\\):"
+    - title: Others
+      order: 998
 brews:
   - homepage: https://github.com/gabe565/domain-watch
     description: Get notified about domain changes as they happen
