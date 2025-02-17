@@ -1,9 +1,9 @@
 package config
 
 import (
-	"log/slog"
-	"strings"
 	"time"
+
+	"gabe565.com/utils/slogx"
 )
 
 type Config struct {
@@ -12,8 +12,8 @@ type Config struct {
 	Sleep     time.Duration
 	Threshold []int
 
-	logLevel  string
-	logFormat string
+	logLevel  slogx.Level
+	logFormat slogx.Format
 
 	TelegramChat  int64
 	TelegramToken string
@@ -30,8 +30,8 @@ func New() *Config {
 		Sleep:     3 * time.Second,
 		Threshold: []int{1, 7},
 
-		logLevel:  strings.ToLower(slog.LevelInfo.String()),
-		logFormat: FormatAuto.String(),
+		logLevel:  slogx.LevelInfo,
+		logFormat: slogx.FormatAuto,
 
 		MetricsAddress: ":9090",
 	}
