@@ -2,6 +2,7 @@ package domain
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"time"
@@ -42,6 +43,8 @@ func (d Domain) Log() *slog.Logger {
 	return slog.With("domain", d.Name)
 }
 
+var ErrNoExpiration = errors.New("could not find expiration date")
+
 func (d *Domain) Run(ctx context.Context, integrations integration.Integrations) error {
 	var err error
 	d.CurrWhois, err = d.Whois()
@@ -55,8 +58,7 @@ func (d *Domain) Run(ctx context.Context, integrations integration.Integrations)
 	l := d.Log()
 
 	if d.CurrWhois.Domain.ExpirationDateInTime == nil {
-		l.Info("Could not determine expiration date")
-		return nil
+		return ErrNoExpiration
 	}
 
 	d.ExpiresAt = d.CurrWhois.Domain.ExpirationDateInTime.Local()
