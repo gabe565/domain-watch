@@ -32,7 +32,7 @@ type Domain struct {
 
 func (d Domain) Whois() (whoisparser.WhoisInfo, error) {
 	raw, err := whois.Whois(d.Name)
-	if err != nil {
+	if err != nil && raw == "" {
 		return whoisparser.WhoisInfo{}, err
 	}
 
