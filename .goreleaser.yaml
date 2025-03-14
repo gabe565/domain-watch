@@ -24,10 +24,6 @@ builds:
     ignore:
       - goos: windows
         goarch: arm
-        goarm: 6
-      - goos: windows
-        goarch: arm
-        goarm: 7
 archives:
   - formats: tar.gz
     # use zip for windows archives
