@@ -4,7 +4,6 @@ go 1.24.1
 
 require (
 	gabe565.com/utils v0.0.0-20250302063333-ede73b14282c
-	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/go-telegram/bot v1.14.0
 	github.com/gotify/server/v2 v2.6.1
 	github.com/likexian/whois v1.15.6

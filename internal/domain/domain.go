@@ -9,7 +9,6 @@ import (
 	"gabe565.com/domain-watch/internal/config"
 	"gabe565.com/domain-watch/internal/integration"
 	"gabe565.com/domain-watch/internal/message"
-	"github.com/araddon/dateparse"
 	"github.com/likexian/whois"
 	whoisparser "github.com/likexian/whois-parser"
 	"github.com/r3labs/diff/v3"
@@ -55,18 +54,15 @@ func (d *Domain) Run(ctx context.Context, integrations integration.Integrations)
 
 	l := d.Log()
 
-	if d.CurrWhois.Domain.ExpirationDate != "" {
-		d.ExpiresAt, err = dateparse.ParseStrict(d.CurrWhois.Domain.ExpirationDate)
-		if err != nil {
-			d.TimeLeft = 0
-			l.Warn("Failed to parse expiration date", "error", err)
-		} else {
-			d.TimeLeft = time.Until(d.ExpiresAt).Truncate(24 * time.Hour)
-			l.Info("Fetched whois", "expires", d.ExpiresAt, "days_left", d.TimeLeft.Hours()/24.0)
-		}
-	} else {
-		l.Info("Domain does not have an expiration date")
+	if d.CurrWhois.Domain.ExpirationDateInTime == nil {
+		l.Info("Could not determine expiration date")
+		return nil
 	}
+
+	d.ExpiresAt = d.CurrWhois.Domain.ExpirationDateInTime.Local()
+	d.TimeLeft = time.Until(d.ExpiresAt).Truncate(24 * time.Hour)
+
+	l.Info("Fetched whois", "expires", d.ExpiresAt, "days_left", d.TimeLeft.Hours()/24.0)
 
 	if err := d.CheckNotifications(ctx, integrations); err != nil {
 		return fmt.Errorf("failed to send message: %w", err)
