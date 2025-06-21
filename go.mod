@@ -8,7 +8,7 @@ require (
 	github.com/gotify/server/v2 v2.6.1
 	github.com/likexian/whois v1.15.6
 	github.com/likexian/whois-parser v1.24.20
-	github.com/lmittmann/tint v1.0.7
+	github.com/lmittmann/tint v1.1.2
 	github.com/prometheus/client_golang v1.21.1
 	github.com/r3labs/diff/v3 v3.0.1
 	github.com/spf13/cobra v1.9.1
