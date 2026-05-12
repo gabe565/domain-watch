@@ -3,7 +3,7 @@ module gabe565.com/domain-watch
 go 1.24.1
 
 require (
-	gabe565.com/utils v0.0.0-20250302063333-ede73b14282c
+	gabe565.com/utils v0.0.0-20260511235214-4059440fa83b
 	github.com/go-telegram/bot v1.14.0
 	github.com/gotify/server/v2 v2.6.1
 	github.com/likexian/whois v1.15.6
@@ -11,9 +11,9 @@ require (
 	github.com/lmittmann/tint v1.0.7
 	github.com/prometheus/client_golang v1.21.1
 	github.com/r3labs/diff/v3 v3.0.1
-	github.com/spf13/cobra v1.9.1
-	github.com/spf13/pflag v1.0.6
-	github.com/stretchr/testify v1.10.0
+	github.com/spf13/cobra v1.10.1
+	github.com/spf13/pflag v1.0.10
+	github.com/stretchr/testify v1.11.1
 )
 
 require (
